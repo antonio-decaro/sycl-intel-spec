@@ -1,1 +1,1 @@
-# sycl-intel-spec
+# SYCL Intel Specialization
