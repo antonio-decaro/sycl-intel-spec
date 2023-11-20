@@ -31,12 +31,12 @@ $SCRIPT_DIR/build/matrix_mul \
   --size=2048 --num-iters=5 --device=gpu --num-runs=$runs > $SCRIPT_DIR/logs/MatrixMul.log
 echo "nbody"
 $SCRIPT_DIR/build/nbody \
-  --size=4096 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/logs/NBody.log
+  --size=8192 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/logs/NBody.log
 echo "scalar_prod"
 $SCRIPT_DIR/build/scalar_prod \
   --size=2097152 --num-iters=100000 --device=gpu --num-runs=$runs > $SCRIPT_DIR/logs/ScalarProd.log
 echo "sobel"
 $SCRIPT_DIR/build/sobel \
-  --size=1536 --num-iters=1 --device=gpu --no-verification --num-runs=$runs > $SCRIPT_DIR/logs/Sobel.log
+  --size=1024 --num-iters=1 --device=gpu --no-verification --num-runs=$runs > $SCRIPT_DIR/logs/Sobel.log
 
 echo "[*] Done"
