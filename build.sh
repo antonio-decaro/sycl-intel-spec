@@ -65,5 +65,4 @@ cmake -DCMAKE_CXX_COMPILER=$DPCPP_CLANG \
       -DSYCL_BENCH_ENABLE_FP64_BENCHMARKS=$enable_fp64_benchmarks \
       -S $SCRIPT_DIR/sycl-bench -B $SCRIPT_DIR/build
 
-cmake --build $SCRIPT_DIR/build -j"
-
+cmake --build $SCRIPT_DIR/build -j
