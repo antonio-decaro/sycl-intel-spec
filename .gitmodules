@@ -1,0 +1,4 @@
+[submodule "sycl-bench"]
+	path = sycl-bench
+	url = https://github.com/antonio-decaro/sycl-bench.git
+	branch = sub_groups
