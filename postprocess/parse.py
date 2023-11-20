@@ -17,41 +17,58 @@ for file in os.listdir(work_dir):
     out_file = file.replace(".log","")
     try:
         with open(f"{work_dir}/{file}", "r") as input_file, open(f"{out_dir}/{out_file}_parsed.csv", "w") as output_file:
-            output_file.write("kernel-name,size,num-iters,core-freq,memory-freq,kernel-time [s],run-time [s],mean-energy [J],max-energy [J]\n")
+            output_file.write("kernel-name,simd,size,kernel-time-mean[s],kernel-time-min[s],kernel-time-max[s],run-time-mean[s],run-time-min[s],run-time-max[s]\n")
             for line in input_file:
+                line:str
                 if "Results for" in line:
                     line = line.replace("*", "")
                     line = line.replace("Results for", "")
                     line = line.replace(" ", "")
                     line = line.replace("\n", "")
-                    output_file.write(line)
-                if "core-freq:" in line:
-                    line = line.replace("core-freq:", "")
-                    line = line.replace(" ", "")
-                    line = line.replace("\n", "")
-                    output_file.write(", "+ line)
-                if "memory-freq:" in line:
-                    line = line.replace("memory-freq:", "")
-                    line = line.replace(" ", "")
-                    line = line.replace("\n", "")
-                    output_file.write(", "+ line)  
+                    subgr = line[line.find("_sg"):].replace("_sg", "")
+                    line = line[0:line.find("_sg")]
+                    output_file.write(line + "," + subgr)
                 if "problem-size:" in line:
                     line = line.replace("problem-size:", "")
                     line = line.replace(" ", "")
                     line = line.replace("\n", "")
-                    output_file.write(", "+ line)  
+                    output_file.write(","+ line)  
                 if "kernel-time-mean:" in line:
                     line = line.replace("kernel-time-mean:", "")
                     line = line.replace("[s]", "")  
                     line = line.replace(" ", "")
                     line = line.replace("\n", "")
-                    output_file.write(", "+ line)
+                    output_file.write(","+ line)
+                if "kernel-time-min:" in line:
+                    line = line.replace("kernel-time-min:", "")
+                    line = line.replace("[s]", "")  
+                    line = line.replace(" ", "")
+                    line = line.replace("\n", "")
+                    output_file.write(","+ line)
+                if "kernel-time-max:" in line:
+                    line = line.replace("kernel-time-max:", "")
+                    line = line.replace("[s]", "")  
+                    line = line.replace(" ", "")
+                    line = line.replace("\n", "")
+                    output_file.write(","+ line)
                 if "run-time-mean:" in line:
                     line = line.replace("run-time-mean:", "")
                     line = line.replace("[s]", "")  
                     line = line.replace(" ", "")
                     line = line.replace("\n", "")
-                    output_file.write(", "+ line)
-    except:
-        print(f"Empty file {file}, skipping it...")
+                    output_file.write(","+ line)
+                if "run-time-min:" in line:
+                    line = line.replace("run-time-min:", "")
+                    line = line.replace("[s]", "")  
+                    line = line.replace(" ", "")
+                    line = line.replace("\n", "")
+                    output_file.write(","+ line)
+                if "run-time-max:" in line:
+                    line = line.replace("run-time-max:", "")
+                    line = line.replace("[s]", "")  
+                    line = line.replace(" ", "")
+                    line = line.replace("\n", "")
+                    output_file.write(","+ line + "\n")
+    except Exception as e:
+        print(e)
         continue
