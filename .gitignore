@@ -33,3 +33,9 @@
 
 # VSCode
 .vscode/**
+*.bmp
+
+# Compiling
+build/**
+logs/**
+.venv/
