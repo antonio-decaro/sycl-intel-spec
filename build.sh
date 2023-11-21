@@ -5,6 +5,7 @@ CXX_FLAGS=""
 intel_arch=""
 enable_fp64_benchmarks=0
 
+targets="vec_add matrix_mul nbody scalar_prod sobel median lin_reg_coeff kmeans"
 
 # Build the project
 echo "[*] Building the project..."
@@ -65,4 +66,4 @@ cmake -DCMAKE_CXX_COMPILER=$DPCPP_CLANG \
       -DSYCL_BENCH_ENABLE_FP64_BENCHMARKS=$enable_fp64_benchmarks \
       -S $SCRIPT_DIR/sycl-bench -B $SCRIPT_DIR/build
 
-cmake --build $SCRIPT_DIR/build -j
+cmake --build $SCRIPT_DIR/build -j --target $targets
