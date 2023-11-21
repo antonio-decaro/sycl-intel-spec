@@ -20,7 +20,8 @@ Run `run.sh` to execute the benchmarks.
 Optional Parameters:
 - `--runs=` the number of executions;
 ### 3. Drawing plots
-3. Run `process.sh` to draw the plots.
+Run `process.sh` to draw the plots.
 
 Optional Arguments:
 - `--logscale` use logscale to draw Y axis of the chart;
+- `--time_unit=<arg>` arg can be `s` (default), `ms`, `us`, or `ns`;
