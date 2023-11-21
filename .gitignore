@@ -40,3 +40,4 @@ build/**
 logs/**
 .venv/
 parsed
+plots
