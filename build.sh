@@ -5,7 +5,7 @@ CXX_FLAGS=""
 intel_arch=""
 enable_fp64_benchmarks=0
 
-targets="vec_add matrix_mul nbody scalar_prod sobel median lin_reg_coeff kmeans"
+targets="vec_add matrix_mul nbody scalar_prod sobel median lin_reg_coeff kmeans mol_dyn"
 
 # Build the project
 echo "[*] Building the project..."
@@ -67,3 +67,10 @@ cmake -DCMAKE_CXX_COMPILER=$DPCPP_CLANG \
       -S $SCRIPT_DIR/sycl-bench -B $SCRIPT_DIR/build
 
 cmake --build $SCRIPT_DIR/build -j --target $targets
+
+echo "[*] Benchmark buidling finished"
+echo "[*] Copying the benchmark utils to the sub folders"
+
+cp $SCRIPT_DIR/Brommy.bmp $SCRIPT_DIR/sub_groups
+
+echo "[*] Done"
