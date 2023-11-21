@@ -39,5 +39,18 @@ $BENCH_DIR/scalar_prod \
 echo "sobel"
 $BENCH_DIR/sobel \
   --size=1024 --num-iters=1 --device=gpu --no-verification --num-runs=$runs > $SCRIPT_DIR/logs/Sobel.log
+echo "median"
+$BENCH_DIR/median \
+  --size=2048 --num-iters=1000 --device=gpu --no-verification --num-runs=$runs > $SCRIPT_DIR/logs/Median.log
+echo "lin_reg_coeff"
+$BENCH_DIR/lin_reg_coeff \
+  --size=3072 --num-iters=1000 --device=gpu --num-runs=$runs > $SCRIPT_DIR/logs/LinRegCoeff.log
+echo "kmeans"
+$BENCH_DIR/kmeans \
+  --size=32768 --num-iters=50000 --device=gpu --num-runs=$runs > $SCRIPT_DIR/logs/KMeans.log
+echo "mol_dyn"
+$BENCH_DIR/mol_dyn \
+  --size=60000 --num-iters=200000 --device=gpu --num-runs=$runs > $SCRIPT_DIR/logs/MolDyn.log
+
 
 echo "[*] Done"
