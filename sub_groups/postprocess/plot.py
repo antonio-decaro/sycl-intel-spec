@@ -27,7 +27,7 @@ single_plot=False
 
 pd.set_option("display.width", 1000)
 
-def generate_plot(data, kernel_name, output_dir):
+def generate_plot(data, kernel_name):
     data = pd.DataFrame(data)
 
     bar_positions = np.arange(len(data['simd'])) * bar_width
@@ -106,7 +106,7 @@ if __name__ == "__main__":
                 if single_plot:
                     plt.subplot(size, size, i)
                     i += 1
-                generate_plot(data, kernel_name, output_dir)
+                generate_plot(data, kernel_name)
                 if not single_plot:
                     output_file = os.path.join(output_dir, f'{kernel_name}.pdf')
                     plt.savefig(output_file, bbox_inches="tight")
