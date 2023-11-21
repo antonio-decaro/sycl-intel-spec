@@ -32,13 +32,6 @@ def generate_and_save_plot(data, kernel_name, output_dir):
     plt.figure(figsize=(4, 6))
     bar_positions = np.arange(len(data['simd'])) * bar_width
 
-    data['run-time-mean[ms]'] = data['run-time-mean[s]'] * 1000
-    data['run-time-stddev[ms]'] = data['run-time-stddev[s]'] * 1000
-    data['run-time-mean[us]'] = data['run-time-mean[s]'] * 1000000
-    data['run-time-stddev[us]'] = data['run-time-stddev[s]'] * 1000000
-    data['run-time-mean[ns]'] = data['run-time-mean[s]'] * 1000000000
-    data['run-time-stddev[ns]'] = data['run-time-stddev[s]'] * 1000000000
-
     if time_unit == "ms":
         y = data['run-time-mean[ms]']
         yerr = data['run-time-stddev[ms]']
@@ -80,6 +73,14 @@ if __name__ == "__main__":
     for file in os.listdir(kernels_dir):
         try:
             df = pd.read_csv(os.path.join(kernels_dir, file))
+
+            # Convert run-time to ms, us, and ns
+            df['run-time-mean[ms]'] = df['run-time-mean[s]'] * 1000
+            df['run-time-stddev[ms]'] = df['run-time-stddev[s]'] * 1000
+            df['run-time-mean[us]'] = df['run-time-mean[s]'] * 1000000
+            df['run-time-stddev[us]'] = df['run-time-stddev[s]'] * 1000000
+            df['run-time-mean[ns]'] = df['run-time-mean[s]'] * 1000000000
+            df['run-time-stddev[ns]'] = df['run-time-stddev[s]'] * 1000000000
             kernel_names = df["kernel-name"].unique()
 
             for kernel_name in kernel_names:
