@@ -50,6 +50,9 @@ def generate_plot(data, kernel_name):
         plt.yscale('log')
     plt.title(kernel_name)
 
+    plt.ylim(0, max(y) + max(yerr) * 1.1)
+    plt.ylim(max(0, (y.min() - yerr.max()) * 0.9), (y.max() + yerr.max()) * 1.1)
+
     plt.xlim(bar_positions[0] - bar_width, bar_positions[-1] + bar_width)
 
 def get_plots_number(dir):
@@ -60,6 +63,21 @@ def get_plots_number(dir):
         for kernel_name in kernel_names:
                 n += 1
     return n
+
+def generate_time_units(df):
+    df['run-time-mean[ms]'] = df['run-time-mean[s]'] * 1000
+    df['run-time-stddev[ms]'] = df['run-time-stddev[s]'] * 1000
+    df['run-time-min[ms]'] = df['run-time-min[s]'] * 1000
+    df['run-time-max[ms]'] = df['run-time-max[s]'] * 1000
+    df['run-time-mean[us]'] = df['run-time-mean[s]'] * 1000000
+    df['run-time-stddev[us]'] = df['run-time-stddev[s]'] * 1000000
+    df['run-time-min[us]'] = df['run-time-min[s]'] * 1000000
+    df['run-time-max[us]'] = df['run-time-max[s]'] * 1000000
+    df['run-time-mean[ns]'] = df['run-time-mean[s]'] * 1000000000
+    df['run-time-stddev[ns]'] = df['run-time-stddev[s]'] * 1000000000
+    df['run-time-min[ns]'] = df['run-time-min[s]'] * 1000000000
+    df['run-time-max[ns]'] = df['run-time-max[s]'] * 1000000000
+    return df
 
 if __name__ == "__main__":
     if len(sys.argv) != 6:
@@ -93,12 +111,7 @@ if __name__ == "__main__":
             df = pd.read_csv(os.path.join(kernels_dir, file))
 
             # Convert run-time to ms, us, and ns
-            df['run-time-mean[ms]'] = df['run-time-mean[s]'] * 1000
-            df['run-time-stddev[ms]'] = df['run-time-stddev[s]'] * 1000
-            df['run-time-mean[us]'] = df['run-time-mean[s]'] * 1000000
-            df['run-time-stddev[us]'] = df['run-time-stddev[s]'] * 1000000
-            df['run-time-mean[ns]'] = df['run-time-mean[s]'] * 1000000000
-            df['run-time-stddev[ns]'] = df['run-time-stddev[s]'] * 1000000000
+            df = generate_time_units(df)
             kernel_names = df["kernel-name"].unique()
 
             for kernel_name in kernel_names:
