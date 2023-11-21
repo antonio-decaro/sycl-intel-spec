@@ -2,6 +2,7 @@
 
 logscale=False
 time_unit="s"
+single_plot=False
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -9,7 +10,11 @@ while [[ $# -gt 0 ]]; do
       logscale=True
       shift
       ;;
-    --time_unit=*)
+    --single-plot*)
+      single_plot=True
+      shift
+      ;;
+    --time-unit=*)
       time_unit="${1#*=}"
       shift
       ;;
@@ -38,7 +43,7 @@ source $SCRIPT_DIR/postprocess/.venv/bin/activate
 echo "[*] Postprocessing logs..."
 
 python3 $SCRIPT_DIR/postprocess/parse.py $SCRIPT_DIR/logs $SCRIPT_DIR/parsed
-python3 $SCRIPT_DIR/postprocess/plot.py $SCRIPT_DIR/parsed $SCRIPT_DIR/plots $logscale $time_unit
+python3 $SCRIPT_DIR/postprocess/plot.py $SCRIPT_DIR/parsed $SCRIPT_DIR/plots $logscale $time_unit $single_plot
 
 # Deactivate virtual environment
 deactivate
