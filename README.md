@@ -10,6 +10,8 @@ Required arguments:
 - `--cxx_compiler=` the path to the DPC++ compiler;
 - `--intel_arch=` the name of the intel GPU architecture (e.g. acm-g10);
 
+Then navigate to any directory to stress the corresponding feature.
+
 Optional arguments:
 - `--cxx_flags=` additional flags to the DPC++ compiler;
 ### 2. Executing the benchmarks
