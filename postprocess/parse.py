@@ -17,7 +17,7 @@ for file in os.listdir(work_dir):
     out_file = file.replace(".log","")
     try:
         with open(f"{work_dir}/{file}", "r") as input_file, open(f"{out_dir}/{out_file}_parsed.csv", "w") as output_file:
-            output_file.write("kernel-name,simd,size,kernel-time-mean[s],kernel-time-min[s],kernel-time-max[s],run-time-mean[s],run-time-min[s],run-time-max[s]\n")
+            output_file.write("kernel-name,simd,size,kernel-time-mean[s],kernel-time-stddev[s],kernel-time-min[s],kernel-time-max[s],run-time-mean[s],run-time-stddev[s],run-time-min[s],run-time-max[s]\n")
             for line in input_file:
                 line:str
                 if "Results for" in line:
@@ -39,6 +39,12 @@ for file in os.listdir(work_dir):
                     line = line.replace(" ", "")
                     line = line.replace("\n", "")
                     output_file.write(","+ line)
+                if "kernel-time-stddev:" in line:
+                    line = line.replace("kernel-time-stddev:", "")
+                    line = line.replace("[s]", "")  
+                    line = line.replace(" ", "")
+                    line = line.replace("\n", "")
+                    output_file.write(","+ line)
                 if "kernel-time-min:" in line:
                     line = line.replace("kernel-time-min:", "")
                     line = line.replace("[s]", "")  
@@ -53,6 +59,12 @@ for file in os.listdir(work_dir):
                     output_file.write(","+ line)
                 if "run-time-mean:" in line:
                     line = line.replace("run-time-mean:", "")
+                    line = line.replace("[s]", "")  
+                    line = line.replace(" ", "")
+                    line = line.replace("\n", "")
+                    output_file.write(","+ line)
+                if "run-time-stddev:" in line:
+                    line = line.replace("run-time-stddev:", "")
                     line = line.replace("[s]", "")  
                     line = line.replace(" ", "")
                     line = line.replace("\n", "")
