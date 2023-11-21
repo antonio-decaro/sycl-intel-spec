@@ -37,7 +37,7 @@
 
 # Compiling
 build/**
-logs/**
+logs
 .venv/
 parsed
 plots
