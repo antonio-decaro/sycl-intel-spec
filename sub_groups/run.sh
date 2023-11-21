@@ -51,6 +51,9 @@ $BENCH_DIR/kmeans \
 echo "mol_dyn"
 $BENCH_DIR/mol_dyn \
   --size=60000 --num-iters=200000 --device=gpu --num-runs=$runs > $SCRIPT_DIR/logs/MolDyn.log
+echo "merse_twister"
+$BENCH_DIR/merse_twister \
+  --size=262144 --num-iters=50000 --device=gpu --num-runs=$runs > $SCRIPT_DIR/logs/MerseTwister.log
 
 
 echo "[*] Done"
