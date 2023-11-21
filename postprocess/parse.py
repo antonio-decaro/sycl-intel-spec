@@ -16,6 +16,7 @@ if not os.path.exists(out_dir):
 for file in os.listdir(work_dir):
     out_file = file.replace(".log","")
     try:
+        kernel_time_max=False
         with open(f"{work_dir}/{file}", "r") as input_file, open(f"{out_dir}/{out_file}_parsed.csv", "w") as output_file:
             output_file.write("kernel-name,simd,size,kernel-time-mean[s],kernel-time-stddev[s],kernel-time-min[s],kernel-time-max[s],run-time-mean[s],run-time-stddev[s],run-time-min[s],run-time-max[s]\n")
             for line in input_file:
@@ -57,6 +58,7 @@ for file in os.listdir(work_dir):
                     line = line.replace(" ", "")
                     line = line.replace("\n", "")
                     output_file.write(","+ line)
+                    kernel_time_max=True
                 if "run-time-mean:" in line:
                     line = line.replace("run-time-mean:", "")
                     line = line.replace("[s]", "")  
@@ -81,6 +83,13 @@ for file in os.listdir(work_dir):
                     line = line.replace(" ", "")
                     line = line.replace("\n", "")
                     output_file.write(","+ line + "\n")
+        if not kernel_time_max:
+            with open(f"{out_dir}/{out_file}_parsed.csv", "r") as f:
+                lines = f.readlines()
+                lines[0] = lines[0].replace(',kernel-time-max[s]', '')
+
+            with open(f"{out_dir}/{out_file}_parsed.csv", "w") as f:
+                f.writelines(lines)
     except Exception as e:
         print(e)
         continue
