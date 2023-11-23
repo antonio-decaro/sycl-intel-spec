@@ -4,6 +4,7 @@ CXX_COMPILER=""
 CXX_FLAGS=""
 intel_arch=""
 enable_fp64_benchmarks=0
+enable_sg8=1
 
 targets="vec_add matrix_mul nbody scalar_prod sobel median lin_reg_coeff kmeans mol_dyn merse_twister"
 
@@ -26,6 +27,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --enable_fp64*)
       enable_fp64_benchmarks=1
+      shift
+      ;;
+    --disable_sg8*)
+      disable_sg8=0
       shift
       ;;
     *)
@@ -64,6 +69,7 @@ cmake -DCMAKE_CXX_COMPILER=$DPCPP_CLANG \
       -DDPCPP_WITH_LZ_BACKEND=ON \
       -DLZ_ARCH=$intel_arch \
       -DSYCL_BENCH_ENABLE_FP64_BENCHMARKS=$enable_fp64_benchmarks \
+      -DSYCL_BENCH_SUPPORTS_SG_8=$enable_sg8 \
       -S $SCRIPT_DIR/sycl-bench -B $SCRIPT_DIR/build
 
 cmake --build $SCRIPT_DIR/build -j --target $targets
