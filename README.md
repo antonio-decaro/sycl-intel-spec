@@ -7,13 +7,15 @@ Repository for running specialization tests over Intel GPUs.
 Run `build.sh` to build the benchmarks.
 
 Required arguments:
-- `--cxx_compiler=` the path to the DPC++ compiler;
-- `--intel_arch=` the name of the intel GPU architecture (e.g. acm-g10);
+- `--cxx-compiler=` the path to the DPC++ compiler;
+- `--intel-arch=` the name of the intel GPU architecture (e.g. acm-g10);
 
 Then navigate to any directory to stress the corresponding feature.
 
 Optional arguments:
 - `--cxx_flags=` additional flags to the DPC++ compiler;
+- `--enable-fp64` enables fp64 support;
+- `--disable-sg8` disables sub group size 8;
 ### 2. Executing the benchmarks
 Run `run.sh` to execute the benchmarks.
 

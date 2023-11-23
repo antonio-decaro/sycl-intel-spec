@@ -13,23 +13,23 @@ echo "[*] Building the project..."
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --cxx_compiler=*)
+    --cxx-compiler=*)
       CXX_COMPILER="${1#*=}"
       shift
       ;;
-    --cxx_flags=*)
+    --cxx-flags=*)
       CXX_FLAGS="${1#*=}"
       shift
       ;;
-    --intel_arch=*)
+    --intel-arch=*)
       intel_arch="${1#*=}"
       shift
       ;;
-    --enable_fp64*)
+    --enable-fp64*)
       enable_fp64_benchmarks=1
       shift
       ;;
-    --disable_sg8*)
+    --disable-sg8*)
       enable_sg8=0
       shift
       ;;
