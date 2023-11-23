@@ -30,7 +30,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     --disable_sg8*)
-      disable_sg8=0
+      enable_sg8=0
       shift
       ;;
     *)
