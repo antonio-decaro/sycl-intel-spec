@@ -135,24 +135,120 @@ void printDeviceMemoryProperty(ze_device_memory_properties_t props, std::string 
     std::cout << tab << "- Max Clock Rate: " << props.maxClockRate << std::endl;
 }
 
+void printDeviceCacheProperties(ze_device_cache_properties_t props, std::string tab) {
+    std::cout << tab << "- Cache Size: " << props.cacheSize << std::endl;
+    std::string can_control = "NO";
+    if (props.flags & ZE_DEVICE_CACHE_PROPERTY_FLAG_USER_CONTROL) {
+        can_control = "YES";
+    }
+    std::cout << tab << "- User Control: " << can_control << std::endl;
+}
+
+std::string accessPropToString(ze_memory_access_cap_flags_t access) {
+    std::string res = "";
+    if (access & ZE_MEMORY_ACCESS_CAP_FLAG_RW) {
+        res += "RW ";
+    }
+    if (access & ZE_MEMORY_ACCESS_CAP_FLAG_ATOMIC) {
+        res += "ATOMIC ";
+    }
+    if (access & ZE_MEMORY_ACCESS_CAP_FLAG_CONCURRENT) {
+        res += "CONCURRENT ";
+    }
+    if (access & ZE_MEMORY_ACCESS_CAP_FLAG_CONCURRENT_ATOMIC) {
+        res += "CONCURRENT_ATOMIC ";
+    }
+    return res == "" ? "NONE" : res;
+}
+
+std::string externMemPropToString(ze_external_memory_type_flags_t type) {
+    std::string res = "";
+    if (type & ZE_EXTERNAL_MEMORY_TYPE_FLAG_OPAQUE_FD) {
+        res += "OPAQUE_FD ";
+    }
+    if (type & ZE_EXTERNAL_MEMORY_TYPE_FLAG_DMA_BUF) {
+        res += "DMA_BUF ";
+    }
+    if (type & ZE_EXTERNAL_MEMORY_TYPE_FLAG_OPAQUE_WIN32) {
+        res += "OPAQUE_WIN32 ";
+    }
+    if (type & ZE_EXTERNAL_MEMORY_TYPE_FLAG_D3D11_TEXTURE) {
+        res += "D3D11_TEXTURE ";
+    }
+    if (type & ZE_EXTERNAL_MEMORY_TYPE_FLAG_D3D11_TEXTURE_KMT) {
+        res += "D3D11_TEXTURE_KMT ";
+    }
+    if (type & ZE_EXTERNAL_MEMORY_TYPE_FLAG_OPAQUE_WIN32_KMT) {
+        res += "OPAQUE_WIN32_KMT ";
+    }
+    if (type & ZE_EXTERNAL_MEMORY_TYPE_FLAG_D3D12_HEAP) {
+        res += "D3D12_HEAP ";
+    }
+    if (type & ZE_EXTERNAL_MEMORY_TYPE_FLAG_D3D12_RESOURCE) {
+        res += "D3D12_RESOURCE ";
+    }
+    return res == "" ? "NONE" : res;
+}
+
+void printMemoryAccessProperties(ze_device_memory_access_properties_t props, std::string tab) {
+    
+    std::cout << tab << "- Host Alloc Capabilities: " << accessPropToString(props.hostAllocCapabilities) << std::endl;
+    std::cout << tab << "- Device Alloc Capabilities: " << accessPropToString(props.deviceAllocCapabilities) << std::endl;
+    std::cout << tab << "- Shared Single Device Alloc Capabilities: " << accessPropToString(props.sharedSingleDeviceAllocCapabilities) << std::endl;
+    std::cout << tab << "- Shared Cross Device Alloc Capabilities: " << accessPropToString(props.sharedCrossDeviceAllocCapabilities) << std::endl;
+    std::cout << tab << "- Shared System Alloc Capabilities: " << accessPropToString(props.sharedSystemAllocCapabilities) << std::endl;
+}
+
+void printExternalMemoryProperties(ze_device_external_memory_properties_t props, std::string tab) {
+    std::cout << tab << "- Supported external memory import types for memory allocations: " << accessPropToString(props.imageImportTypes) << std::endl;
+    std::cout << tab << "- Supported external memory export types for memory allocations: " << accessPropToString(props.imageExportTypes) << std::endl;
+    std::cout << tab << "- Supported external memory import types for images: " << accessPropToString(props.imageImportTypes) << std::endl;
+    std::cout << tab << "- Supported external memory export types for images: " << accessPropToString(props.imageExportTypes) << std::endl;
+}
+
 void printDeviceMemoryProperties(ze_device_handle_t device, std::string tab) {
 
-    std::vector<ze_device_memory_properties_t> allProps;
+    ze_device_memory_access_properties_t memacc_prop;
+    ze_device_external_memory_properties_t extmem_prop;
+    std::vector<ze_device_memory_properties_t> mem_props;
+    std::vector<ze_device_cache_properties_t> cache_props;
     uint32_t props_count = 0;
 
-    if (checkErrors(zeDeviceGetMemoryProperties(device, &props_count, nullptr))) {
-        std::cout << tab << "Error getting the number of memory properties" << std::endl;
+    memacc_prop.stype = ZE_STRUCTURE_TYPE_DEVICE_MEMORY_ACCESS_PROPERTIES;
+    if (checkErrors(zeDeviceGetMemoryAccessProperties(device, &memacc_prop))) {
+        std::cout << tab << "Error getting device memory access properties" << std::endl;
         return;
     }
-    allProps.resize(props_count);
-    if (checkErrors(zeDeviceGetMemoryProperties(device, &props_count, allProps.data()))) {
+    printMemoryAccessProperties(memacc_prop, tab);
+
+    extmem_prop.stype = ZE_STRUCTURE_TYPE_DEVICE_EXTERNAL_MEMORY_PROPERTIES;
+    if (checkErrors(zeDeviceGetExternalMemoryProperties(device, &extmem_prop))) {
+        std::cout << tab << "Error getting device external memory properties" << std::endl;
+        return;
+    }
+    printExternalMemoryProperties(extmem_prop, tab);
+
+    checkErrors(zeDeviceGetMemoryProperties(device, &props_count, nullptr));
+    mem_props.resize(props_count);
+    if (checkErrors(zeDeviceGetMemoryProperties(device, &props_count, mem_props.data()))) {
         std::cout << tab << "Error getting device memory properties" << std::endl;
         return;
     }
-
     for (int i = 0; i < props_count; ++i) {
         std::cout << tab << "\t[MEMORY #" << i << "]" << std::endl;
-        printDeviceMemoryProperty(allProps[i], tab + "\t");
+        printDeviceMemoryProperty(mem_props[i], tab + "\t");
+    }
+
+    props_count = 0;
+    checkErrors(zeDeviceGetCacheProperties(device, &props_count, nullptr));
+    cache_props.resize(props_count);
+    if (checkErrors(zeDeviceGetCacheProperties(device, &props_count, cache_props.data()))) {
+        std::cout << tab << "Error getting device memory access properties" << std::endl;
+        return;
+    }
+    for (int i = 0; i < props_count; ++i) {
+        std::cout << tab << "\t[CACHE #" << i << "]" << std::endl;
+        printDeviceCacheProperties(cache_props[i], tab + "\t");
     }
 }
 
@@ -178,11 +274,25 @@ void printSubDeviceProperties(ze_device_handle_t device, std::string tab) {
     }
 }
 
-void printDeviceProperties(ze_device_handle_t device, std::string tab) {
-    ze_device_properties_t props {};
-    props.stype = ZE_STRUCTURE_TYPE_DEVICE_PROPERTIES;
+void printDeviceImageProperties(ze_device_handle_t device, std::string tab) {
+    ze_device_image_properties_t props {};
+    props.stype = ZE_STRUCTURE_TYPE_DEVICE_IMAGE_PROPERTIES;
 
-    
+    if (checkErrors(zeDeviceGetImageProperties(device, &props))) {
+        std::cout << tab << "Error getting device image properties" << std::endl;
+        return;
+    }
+
+    std::cout << tab << "- Max Image 1D Width: " << props.maxImageDims1D << std::endl;
+    std::cout << tab << "- Max Image 2D Width: " << props.maxImageDims2D << std::endl;
+    std::cout << tab << "- Max Image 3D Width: " << props.maxImageDims3D << std::endl;
+    std::cout << tab << "- Max Image Array Slices: " << props.maxImageArraySlices << std::endl;
+    std::cout << tab << "- Max Samplers: " << props.maxSamplers << std::endl;
+    std::cout << tab << "- Max Read Image Args: " << props.maxReadImageArgs << std::endl;
+    std::cout << tab << "- Max Write Image Args: " << props.maxWriteImageArgs << std::endl;
+}
+
+void printDeviceProperties(ze_device_handle_t device, std::string tab) {
     std::cout << tab << "[General Info]" << std::endl;
     printDeviceGeneralInfo(device, tab);
 
@@ -191,6 +301,9 @@ void printDeviceProperties(ze_device_handle_t device, std::string tab) {
 
     std::cout << tab << "[Memory Properties]" << std::endl;
     printDeviceMemoryProperties(device, tab);
+
+    std::cout << tab << "[Image Properties]" << std::endl;
+    printDeviceImageProperties(device, tab);
 
     std::cout << tab << "[Sub-Devices Properties]" << std::endl;
     printSubDeviceProperties(device, tab);
