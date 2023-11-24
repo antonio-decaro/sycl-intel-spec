@@ -1,5 +1,5 @@
 #include <level_zero/ze_api.h>
-// #include <level_zero/zes_api.h>
+#include "utils.hpp"
 #include <vector>
 #include <iostream>
 #include <ctime>
@@ -7,31 +7,6 @@
 
 void printDeviceProperties(ze_device_handle_t device, std::string tab);
 void printDriverProperties(ze_driver_handle_t driver);
-
-bool checkErrors(ze_result_t res) {
-    switch (res) {
-        case ZE_RESULT_SUCCESS:
-            return false;
-        case ZE_RESULT_ERROR_UNINITIALIZED:
-            std::cerr << "Uninitialized Sys API" << std::endl;
-            break;
-        case ZE_RESULT_ERROR_DEVICE_LOST:
-            std::cerr << "Device Lost" << std::endl;
-            break;
-        case ZE_RESULT_ERROR_OUT_OF_HOST_MEMORY:
-            std::cerr << "Out of Host Memory" << std::endl;
-            break;
-        case ZE_RESULT_ERROR_OUT_OF_DEVICE_MEMORY:
-            std::cerr << "ZE_RESULT_ERROR_OUT_OF_DEVICE_MEMORY" << std::endl;
-            break;
-        case ZE_RESULT_ERROR_INVALID_ENUMERATION:
-            std::cerr << "ZE_RESULT_ERROR_INVALID_ENUMERATION" << std::endl;
-            break;
-        default:
-            std::cerr << "Unknown error: " << res << std::endl;
-    }
-    return true;
-}
 
 std::vector<ze_driver_handle_t> getAllDrivers() {
     
