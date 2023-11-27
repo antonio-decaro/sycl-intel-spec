@@ -1,10 +1,13 @@
 # SYCL Intel Specialization
-Repository for running specialization tests over Intel GPUs.
-## Requirements
+Repository for running specialization tests over Intel GPUs with SYCL.
 
-## Repeating experiments
-### 1. Building the benchmark
-Run `build.sh` to build the benchmarks.
+## Requirements
+TODO
+
+## Building experiments
+You need to build the scripts before navigating in each sub-directory.
+
+To do that, run `build.sh` to build the benchmarks.
 
 Required arguments:
 - `--cxx-compiler=` the path to the DPC++ compiler;
@@ -18,14 +21,7 @@ Optional arguments:
 - `--disable-sg8` disables sub group size 8;
 - `--disable-compute-benchmarks` avoid building computing benchmarks;
 - `--disable-memory-benchmarks` avoid building memory benchmarks;
-### 2. Executing the benchmarks
-Run `run.sh` to execute the benchmarks.
 
-Optional Parameters:
-- `--runs=` the number of executions;
-### 3. Drawing plots
-Run `process.sh` to draw the plots.
+## Post Building
 
-Optional Arguments:
-- `--logscale` use logscale to draw Y axis of the chart;
-- `--time_unit=<arg>` arg can be `s` (default), `ms`, `us`, or `ns`;
+You are free to navigate in each sub-directory to test one or more covered aspects of this repository.
