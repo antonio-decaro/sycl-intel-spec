@@ -11,11 +11,11 @@ in_dir = ""
 out_dir = ""
 
 def plot(df: pd.DataFrame):
-  df['Name'] = df['Name'].replace(df['Name'].values, list(map(lambda x: x.replace(' Bandwidth', ''), df['Name'].values)))
-  df['Name'] = df['Name'].replace(df['Name'].values, list(map(lambda x: x.replace(' Peak', ''), df['Name'].values)))
-  df['Name'] = df['Name'].replace(df['Name'].values, list(map(lambda x: x.replace(' Vector', ''), df['Name'].values)))
-  df['Name'] = df['Name'].replace(df['Name'].values, list(map(lambda x: x.replace(' ', '-'), df['Name'].values)))
+  # Clean up
+  clean_fn = lambda x: x.replace(' Bandwidth', '').replace(' Peak', '').replace(' Vector', '').replace(' ', '-')
+  df['Name'] = df['Name'].replace(df['Name'].values, list(map(clean_fn, df['Name'].values)))
 
+  # Normalize values
   df['Bandwidth'] = df['Bandwidth'] / 1e9
 
   # Plot memory boundaries
