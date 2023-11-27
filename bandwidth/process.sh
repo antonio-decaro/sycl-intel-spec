@@ -45,6 +45,7 @@ if [ $delete_directory = true ];
 then
   echo "[*] Deleting temporary directory..."
   rm -rf $SCRIPT_DIR/tmp
+  rm -rf $SCRIPT_DIR/config
 fi
 
 echo "[*] Done"
