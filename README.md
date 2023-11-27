@@ -16,6 +16,8 @@ Optional arguments:
 - `--cxx_flags=` additional flags to the DPC++ compiler;
 - `--enable-fp64` enables fp64 support;
 - `--disable-sg8` disables sub group size 8;
+- `--disable-compute-benchmarks` avoid building computing benchmarks;
+- `--disable-memory-benchmarks` avoid building memory benchmarks;
 ### 2. Executing the benchmarks
 Run `run.sh` to execute the benchmarks.
 
