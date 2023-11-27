@@ -41,3 +41,4 @@ logs
 .venv/
 parsed
 plots
+config
