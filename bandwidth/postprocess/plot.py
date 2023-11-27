@@ -28,7 +28,12 @@ def plot(df: pd.DataFrame):
   plt.xlabel("Memory Type")
   plt.ylabel("GB/s")
 
-  plt.bar(df_memory["Name"], df_memory["Bandwidth"], color='b')
+  bars_memory = plt.bar(df_memory["Name"], df_memory["Bandwidth"], color='b')
+
+  # Annotate memory bars with values
+  for bar in bars_memory:
+    yval = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width() / 2, yval, round(yval, 2), ha='center', va='bottom')
 
   plt.subplot(1, 2, 2)
   plt.title("Compute Boundaries")
@@ -36,7 +41,10 @@ def plot(df: pd.DataFrame):
   plt.ylabel("GFLOPS")
 
   # Plot compute boundaries
-  plt.bar(df_compute["Name"], df_compute["Bandwidth"], color='r')
+  bars_compute = plt.bar(df_compute["Name"], df_compute["Bandwidth"], color='r')
+  for bar in bars_compute:
+    yval = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width() / 2, yval, round(yval, 2), ha='center', va='bottom')
 
 if __name__ == '__main__':
   if len(sys.argv) != 3:
