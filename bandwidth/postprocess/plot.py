@@ -14,6 +14,7 @@ def plot(df: pd.DataFrame):
   df['Name'] = df['Name'].replace(df['Name'].values, list(map(lambda x: x.replace(' Bandwidth', ''), df['Name'].values)))
   df['Name'] = df['Name'].replace(df['Name'].values, list(map(lambda x: x.replace(' Peak', ''), df['Name'].values)))
   df['Name'] = df['Name'].replace(df['Name'].values, list(map(lambda x: x.replace(' Vector', ''), df['Name'].values)))
+  df['Name'] = df['Name'].replace(df['Name'].values, list(map(lambda x: x.replace(' ', '-'), df['Name'].values)))
 
   df['Bandwidth'] = df['Bandwidth'] / 1e9
 
