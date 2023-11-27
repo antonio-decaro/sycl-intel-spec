@@ -1,4 +1,4 @@
-# Sub Group Analysis
+# Roofline Analysis
 This directory contains the scripts for analyzing memory bandwidth of the Intel GPU.
 
 ## Requirements
@@ -17,3 +17,15 @@ If it fails you can try executing with `sudo`.
 
 Optional Parameters:
 - `--runs=` the number of executions;
+
+Feel free to customize the values of `size` and `local` to your preferences.
+
+### 2. Analyzing Results
+Run `process.sh` to parse the collected data.
+
+Optional Parameters:
+- `--delete-tmp-directory` deletes the tmp directory once the parsing is done.
+
+At the end of the execution you will have two directories:
+- `logs` in this directory there will be files describing the values of the roofline model;
+- `plots` in this directory an HTML to visualize the roofline;
