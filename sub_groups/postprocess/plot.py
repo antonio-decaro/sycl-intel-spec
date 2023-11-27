@@ -3,12 +3,9 @@
 from math import sqrt
 import sys
 import os
-import time
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
 
 pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
