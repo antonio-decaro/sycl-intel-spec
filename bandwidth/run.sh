@@ -29,7 +29,6 @@ advisor --collect=roofline --profile-gpu --project-dir=$SCRIPT_DIR/logs/tmp/host
   $BENCH_DIR/host_device_bandwidth --size=256 --local=32 --device=gpu --num-runs=$runs
 advisor --collect=roofline --profile-gpu --project-dir=$SCRIPT_DIR/logs/tmp/local_mem -- \
   $BENCH_DIR/local_mem --size=8388608 --device=gpu --num-runs=$runs 
-echo "[*] Done"
 
 echo "[*] Generating reports..."
 advisor --report=roofs --gpu --format=csv --project-dir=$SCRIPT_DIR/logs/tmp/host_device_bandwidth --report-output=$SCRIPT_DIR/logs/host_device_bandwidth.csv
