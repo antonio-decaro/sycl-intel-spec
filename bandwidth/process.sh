@@ -41,6 +41,8 @@ advisor --report=roofline --gpu --project-dir=$SCRIPT_DIR/tmp/local_mem --report
 advisor --report=roofs --gpu --format=csv --project-dir=$SCRIPT_DIR/tmp/host_device_bandwidth --report-output=$SCRIPT_DIR/logs/host_device_bandwidth.csv
 advisor --report=roofs --gpu --format=csv --project-dir=$SCRIPT_DIR/tmp/local_mem --report-output=$SCRIPT_DIR/logs/local_mem.csv
 
+python3 $SCRIPT_DIR/postprocess/plot.py $SCRIPT_DIR/logs $SCRIPT_DIR/plots/boundaries.pdf
+
 if [ $delete_directory = true ]; 
 then
   echo "[*] Deleting temporary directory..."
