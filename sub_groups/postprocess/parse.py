@@ -18,7 +18,12 @@ for file in os.listdir(work_dir):
     try:
         kernel_time_max=False
         with open(f"{work_dir}/{file}", "r") as input_file, open(f"{out_dir}/{out_file}_parsed.csv", "w") as output_file:
-            output_file.write("kernel-name,simd,size,kernel-time-mean[s],kernel-time-stddev[s],kernel-time-min[s],kernel-time-max[s],run-time-mean[s],run-time-stddev[s],run-time-min[s],run-time-max[s]\n")
+            output_file.write("kernel-name,simd,size,kernel-time[s],run-time[s]\n")
+            vals_kernel = []
+            vals_runtime = []
+            name = ""
+            simd = ""
+            size = ""
             for line in input_file:
                 line:str
                 if "Results for" in line:
@@ -28,68 +33,31 @@ for file in os.listdir(work_dir):
                     line = line.replace("\n", "")
                     subgr = line[line.find("_sg"):].replace("_sg", "")
                     line = line[0:line.find("_sg")]
-                    output_file.write(line + "," + subgr)
+                    name = line
+                    simd = subgr
                 if "problem-size:" in line:
                     line = line.replace("problem-size:", "")
                     line = line.replace(" ", "")
                     line = line.replace("\n", "")
-                    output_file.write(","+ line)  
-                if "kernel-time-mean:" in line:
-                    line = line.replace("kernel-time-mean:", "")
-                    line = line.replace("[s]", "")  
-                    line = line.replace(" ", "")
-                    line = line.replace("\n", "")
-                    output_file.write(","+ line)
-                if "kernel-time-stddev:" in line:
-                    line = line.replace("kernel-time-stddev:", "")
-                    line = line.replace("[s]", "")  
-                    line = line.replace(" ", "")
-                    line = line.replace("\n", "")
-                    output_file.write(","+ line)
-                if "kernel-time-min:" in line:
-                    line = line.replace("kernel-time-min:", "")
-                    line = line.replace("[s]", "")  
-                    line = line.replace(" ", "")
-                    line = line.replace("\n", "")
-                    output_file.write(","+ line)
-                if "kernel-time-max:" in line:
-                    line = line.replace("kernel-time-max:", "")
-                    line = line.replace("[s]", "")  
-                    line = line.replace(" ", "")
-                    line = line.replace("\n", "")
-                    output_file.write(","+ line)
-                    kernel_time_max=True
-                if "run-time-mean:" in line:
-                    line = line.replace("run-time-mean:", "")
-                    line = line.replace("[s]", "")  
-                    line = line.replace(" ", "")
-                    line = line.replace("\n", "")
-                    output_file.write(","+ line)
-                if "run-time-stddev:" in line:
-                    line = line.replace("run-time-stddev:", "")
-                    line = line.replace("[s]", "")  
-                    line = line.replace(" ", "")
-                    line = line.replace("\n", "")
-                    output_file.write(","+ line)
-                if "run-time-min:" in line:
-                    line = line.replace("run-time-min:", "")
-                    line = line.replace("[s]", "")  
-                    line = line.replace(" ", "")
-                    line = line.replace("\n", "")
-                    output_file.write(","+ line)
-                if "run-time-max:" in line:
-                    line = line.replace("run-time-max:", "")
-                    line = line.replace("[s]", "")  
-                    line = line.replace(" ", "")
-                    line = line.replace("\n", "")
-                    output_file.write(","+ line + "\n")
-        if not kernel_time_max:
-            with open(f"{out_dir}/{out_file}_parsed.csv", "r") as f:
-                lines = f.readlines()
-                lines[0] = lines[0].replace(',kernel-time-max[s]', '')
-
-            with open(f"{out_dir}/{out_file}_parsed.csv", "w") as f:
-                f.writelines(lines)
+                    size = line
+                if "kernel-time-samples:" in line:
+                    samples = line.replace("kernel-time-samples: ", "")
+                    samples = samples.replace("\"", "")
+                    samples = samples.strip()
+                    for sample in samples.split(" "):
+                        vals_kernel.append(sample)
+                if "run-time-samples:" in line:
+                    samples = line.replace("run-time-samples: ", "")
+                    samples = samples.replace("\"", "")
+                    samples = samples.strip()
+                    for sample in samples.split(" "):
+                        vals_runtime.append(sample)
+                if len(vals_kernel) != len(vals_runtime):
+                    vals_kernel = ['N/A' for _ in range(len(vals_runtime))]
+                for kernel, runtime in zip(vals_kernel, vals_runtime):
+                    output_file.write(f"{name},{simd},{size},{kernel},{runtime}\n")
+                    vals_kernel = []
+                    vals_runtime = []
     except Exception as e:
         print(e)
         continue

@@ -16,7 +16,7 @@ axis_label_size=13
 font_size=11
 scatter_size=15
 legend_size=11
-bar_width=0.25
+bar_width=10
 subgroup_sizes=[8, 16, 32]
 logscale = False
 time_unit="s"
@@ -26,31 +26,24 @@ pd.set_option("display.width", 1000)
 
 def generate_plot(data, kernel_name):
     data = pd.DataFrame(data)
-
-    bar_positions = np.arange(len(data['simd'])) * bar_width
-
-    if time_unit == "ms":
-        y = data['run-time-mean[ms]']
-        yerr = data['run-time-stddev[ms]']
-    elif time_unit == "us":
-        y = data['run-time-mean[us]']
-        yerr = data['run-time-stddev[us]']
-    else:
-        y = data['run-time-mean[s]']
-        yerr = data['run-time-stddev[s]']
     
-    plt.errorbar(bar_positions, y, yerr, fmt='o', linewidth=2, capsize=6)
-    plt.xticks(bar_positions, data['simd'], fontsize=font_size)
+    col_name = f'kernel-time[{time_unit}]'
+    if data[col_name].isnull().values.any():
+        col_name = f'run-time[{time_unit}]'
+        
+    vals = []
+    for simd in data[col_name].groupby(data['simd']):
+        vals.append(simd[1].values)
+
+    labels = [s for s in data['simd'].unique()]
+    
+    plt.boxplot(vals, patch_artist=True, labels=labels, showfliers=False)
+
     plt.xlabel('SIMD')
     plt.ylabel(f'Run Time ({time_unit})')
     if logscale:
         plt.yscale('log')
     plt.title(kernel_name)
-
-    plt.ylim(0, max(y) + max(yerr) * 1.1)
-    plt.ylim(max(0, (y.min() - yerr.max()) * 0.9), (y.max() + yerr.max()) * 1.1)
-
-    plt.xlim(bar_positions[0] - bar_width, bar_positions[-1] + bar_width)
 
 def get_plots_number(dir):
     n = 0
@@ -62,18 +55,12 @@ def get_plots_number(dir):
     return n
 
 def generate_time_units(df):
-    df['run-time-mean[ms]'] = df['run-time-mean[s]'] * 1000
-    df['run-time-stddev[ms]'] = df['run-time-stddev[s]'] * 1000
-    df['run-time-min[ms]'] = df['run-time-min[s]'] * 1000
-    df['run-time-max[ms]'] = df['run-time-max[s]'] * 1000
-    df['run-time-mean[us]'] = df['run-time-mean[s]'] * 1000000
-    df['run-time-stddev[us]'] = df['run-time-stddev[s]'] * 1000000
-    df['run-time-min[us]'] = df['run-time-min[s]'] * 1000000
-    df['run-time-max[us]'] = df['run-time-max[s]'] * 1000000
-    df['run-time-mean[ns]'] = df['run-time-mean[s]'] * 1000000000
-    df['run-time-stddev[ns]'] = df['run-time-stddev[s]'] * 1000000000
-    df['run-time-min[ns]'] = df['run-time-min[s]'] * 1000000000
-    df['run-time-max[ns]'] = df['run-time-max[s]'] * 1000000000
+    df['run-time[ms]'] = df['run-time[s]'] * 1000
+    df['run-time[us]'] = df['run-time[s]'] * 1000000
+    df['run-time[ns]'] = df['run-time[s]'] * 1000000000
+    df['kernel-time[ms]'] = df['kernel-time[s]'] * 1000
+    df['kernel-time[us]'] = df['kernel-time[s]'] * 1000000
+    df['kernel-time[ns]'] = df['kernel-time[s]'] * 1000000000
     return df
 
 if __name__ == "__main__":
@@ -101,9 +88,6 @@ if __name__ == "__main__":
         plt.subplot(size, size, 1)
 
     for file in os.listdir(kernels_dir):
-        if not single_plot:
-            plt.clf()
-            plt.figure(figsize=(4, 6))
         try:
             df = pd.read_csv(os.path.join(kernels_dir, file))
 
@@ -112,6 +96,11 @@ if __name__ == "__main__":
             kernel_names = df["kernel-name"].unique()
 
             for kernel_name in kernel_names:
+                if not single_plot:
+                    plt.clf()
+                    plt.figure(figsize=(4, 6))
+                # if (kernel_name != "VectorAddition_fp32"):
+                #     continue
                 data = df[df["kernel-name"] == kernel_name]
                 if single_plot:
                     plt.subplot(size, size, i)
