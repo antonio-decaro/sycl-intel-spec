@@ -26,6 +26,8 @@ for file in os.listdir(work_dir):
             size = ""
             for line in input_file:
                 line:str
+                if "Elapsed Time:" in line:
+                    break
                 if "Results for" in line:
                     line = line.replace("*", "")
                     line = line.replace("Results for", "")
