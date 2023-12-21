@@ -42,8 +42,13 @@ source $SCRIPT_DIR/postprocess/.venv/bin/activate
 
 echo "[*] Postprocessing logs..."
 
+mkdir -p $SCRIPT_DIR/parsed
+mkdir -p $SCRIPT_DIR/merged
+mkdir -p $SCRIPT_DIR/plots
+
 python3 $SCRIPT_DIR/postprocess/parse.py $SCRIPT_DIR/logs $SCRIPT_DIR/parsed
-python3 $SCRIPT_DIR/postprocess/plot.py $SCRIPT_DIR/parsed $SCRIPT_DIR/plots $logscale $time_unit $single_plot
+python3 $SCRIPT_DIR/postprocess/merge.py $SCRIPT_DIR/parsed $SCRIPT_DIR/tmp $SCRIPT_DIR/merged
+python3 $SCRIPT_DIR/postprocess/plot.py $SCRIPT_DIR/merged $SCRIPT_DIR/plots $logscale $time_unit $single_plot
 
 # Deactivate virtual environment
 deactivate
