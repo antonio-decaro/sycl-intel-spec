@@ -22,13 +22,14 @@ BENCH_DIR=$SCRIPT_DIR/../build
 # Running benchmarks
 echo "[*] Running benchmarks..."
 
-mkdir -p $SCRIPT_DIR/logs
 mkdir -p $SCRIPT_DIR/tmp
+mkdir -p $SCRIPT_DIR/tmp/logs
+mkdir -p $SCRIPT_DIR/tmp/vtune-reports
 
 echo "vec_add"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/vec_add \
-  --size=1000000 --num-iters=100000 --device=gpu --num-runs=$runs -- > $SCRIPT_DIR/logs/VectorAddition.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/VectorAddition.csv
+  --size=1000000 --num-iters=100000 --device=gpu --num-runs=$runs -- > $SCRIPT_DIR/tmp/logs/VectorAddition.log
+vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/VectorAddition.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "matrix_mul"
@@ -39,8 +40,8 @@ rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "nbody"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/nbody \
-  --size=8192 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/logs/NBody.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/NBody.csv
+  --size=8192 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/NBody.log
+vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/NBody.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "scalar_prod"

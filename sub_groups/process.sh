@@ -51,17 +51,18 @@ fi
 
 echo "[*] Postprocessing logs..."
 
-mkdir -p $SCRIPT_DIR/parsed
-mkdir -p $SCRIPT_DIR/merged
+mkdir -p $SCRIPT_DIR/tmp/parsed
+mkdir -p $SCRIPT_DIR/tmp/merged
 mkdir -p $SCRIPT_DIR/plots
 mkdir -p $SCRIPT_DIR/plots/time
 mkdir -p $SCRIPT_DIR/plots/xve-utilization
+mkdir -p $SCRIPT_DIR/plots/xve-occupancy
 
-python3 $SCRIPT_DIR/postprocess/parse.py $SCRIPT_DIR/logs $SCRIPT_DIR/parsed
-python3 $SCRIPT_DIR/postprocess/merge.py $SCRIPT_DIR/parsed $SCRIPT_DIR/tmp $SCRIPT_DIR/merged
-python3 $SCRIPT_DIR/postprocess/plot_time.py $SCRIPT_DIR/merged $SCRIPT_DIR/plots/time $logscale $time_unit $single_plot
-python3 $SCRIPT_DIR/postprocess/plot_xve_utilization.py $SCRIPT_DIR/merged $SCRIPT_DIR/plots/xve-utilization $single_plot
-python3 $SCRIPT_DIR/postprocess/plot_xve_occupancy.py $SCRIPT_DIR/merged $SCRIPT_DIR/plots/xve-occupancy $single_plot
+python3 $SCRIPT_DIR/postprocess/parse.py $SCRIPT_DIR/tmp/logs $SCRIPT_DIR/tmp/parsed
+python3 $SCRIPT_DIR/postprocess/merge.py $SCRIPT_DIR/tmp/parsed $SCRIPT_DIR/tmp/vtune-reports $SCRIPT_DIR/tmp/merged
+python3 $SCRIPT_DIR/postprocess/plot_time.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/time $logscale $time_unit $single_plot
+python3 $SCRIPT_DIR/postprocess/plot_xve_utilization.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/xve-utilization $single_plot
+python3 $SCRIPT_DIR/postprocess/plot_xve_occupancy.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/xve-occupancy $single_plot
 
 # Deactivate virtual environment
 if [ "$no_venv" = false ]; then
