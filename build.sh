@@ -2,7 +2,6 @@
 
 CXX_COMPILER=""
 CXX_FLAGS=""
-intel_arch=""
 enable_fp64_benchmarks=0
 enable_sg8=1
 compute_benchmarks=1
