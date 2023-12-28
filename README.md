@@ -11,7 +11,6 @@ To do that, run `build.sh` to build the benchmarks.
 
 Required arguments:
 - `--cxx-compiler=` the path to the DPC++ compiler;
-- `--intel-arch=` the name of the intel GPU architecture (e.g. acm-g10);
 
 Then navigate to any directory to stress the corresponding feature.
 
