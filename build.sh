@@ -82,7 +82,7 @@ cmake -DCMAKE_CXX_COMPILER=$DPCPP_CLANG \
       -DCMAKE_CXX_FLAGS="-Wno-unknown-cuda-version -Wno-linker-warnings -Wno-sycl-target $CXX_FLAGS" \
       -DENABLED_TIME_EVENT_PROFILING=ON \
       -DSYCL_IMPL=${SYCL_IMPL} \
-      -DDPCPP_WITH_LZ_BACKEND=ON \
+      -DDPCPP_WITH_LZ_BACKEND=OFF \
       -DSYCL_BENCH_ENABLE_FP64_BENCHMARKS=$enable_fp64_benchmarks \
       -DSYCL_BENCH_SUPPORTS_SG_8=$enable_sg8 \
       -S $SCRIPT_DIR/sycl-bench -B $SCRIPT_DIR/build
