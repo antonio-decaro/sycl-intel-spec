@@ -1,6 +1,7 @@
 import pandas as pd
 import sys
 import os
+from scipy import stats
 
 if len(sys.argv) != 3:
   print("Usage: python script.py <kernel_dir> <out_file>")
@@ -8,7 +9,7 @@ if len(sys.argv) != 3:
   
 def get_data(data: pd.DataFrame, resume_df: pd.DataFrame, kernel_name, default_simd=16):
   grouped = data.groupby(["simd"])
-  times = grouped['run-time[s]'].mean()
+  times = grouped['run-time[s]'].apply(stats.gmean)
   
   for name, grp in grouped:
     simd = grp['simd'].unique()[0]
