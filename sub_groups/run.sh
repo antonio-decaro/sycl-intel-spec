@@ -34,7 +34,7 @@ rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "matrix_mul"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/matrix_mul \
-  --size=2048 --num-iters=5 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MatrixMul.log
+  --size=4096 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MatrixMul.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/MatrixMul.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
@@ -46,43 +46,43 @@ rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "scalar_prod"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/scalar_prod \
-  --size=2097152 --num-iters=100000 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/ScalarProd.log
+  --size=8388608 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/ScalarProd.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/ScalarProd.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "sobel"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/sobel \
-  --size=1024 --num-iters=1 --device=gpu --no-verification --num-runs=$runs > $SCRIPT_DIR/tmp/logs/Sobel.log
+  --size=4096 --num-iters=1 --device=gpu --no-verification --num-runs=$runs > $SCRIPT_DIR/tmp/logs/Sobel.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/Sobel.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "median"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/median \
-  --size=2048 --num-iters=1000 --device=gpu --no-verification --num-runs=$runs > $SCRIPT_DIR/tmp/logs/Median.log
+  --size=4096 --num-iters=1 --device=gpu --no-verification --num-runs=$runs > $SCRIPT_DIR/tmp/logs/Median.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/Median.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "lin_reg_coeff"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/lin_reg_coeff \
-  --size=3072 --num-iters=1000 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/LinRegCoeff.log
+  --size=8388608 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/LinRegCoeff.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/LinRegCoeff.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "kmeans"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/kmeans \
-  --size=32768 --num-iters=50000 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/KMeans.log
+  --size=16777216 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/KMeans.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/KMeans.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "mol_dyn"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/mol_dyn \
-  --size=60000 --num-iters=200000 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MolDyn.log
+  --size=16777216 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MolDyn.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/MolDyn.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "merse_twister"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/merse_twister \
-  --size=262144 --num-iters=50000 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MerseTwister.log
+  --size=33554432 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MerseTwister.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/MerseTwister.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
