@@ -15,7 +15,7 @@ Required arguments:
 Then navigate to any directory to stress the corresponding feature.
 
 Optional arguments:
-- `--cxx_flags=` additional flags to the DPC++ compiler;
+- `--cxx-flags=` additional flags to the DPC++ compiler;
 - `--enable-fp64` enables fp64 support;
 - `--disable-sg8` disables sub group size 8;
 - `--disable-compute-benchmarks` avoid building computing benchmarks;

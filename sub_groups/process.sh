@@ -3,6 +3,7 @@
 logscale=False
 time_unit="s"
 single_plot=False
+no_venv=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -18,6 +19,10 @@ while [[ $# -gt 0 ]]; do
       time_unit="${1#*=}"
       shift
       ;;
+    --no-venv*)
+      no_venv=true
+      shift
+      ;;
     *)
       echo "Invalid argument: $1"
       return 1 2>/dev/null
@@ -29,16 +34,20 @@ done
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-# check if venv folder exists
-if [ ! -d "$SCRIPT_DIR/postprocess/.venv" ]; then
-  echo "[*] Creating virtual environment..."
-  python3 -m venv $SCRIPT_DIR/postprocess/.venv
+if [ "$no_venv" = true ]; then
+  echo "[*] Skipping virtual environment creation"
   pip3 install -r $SCRIPT_DIR/postprocess/requirements.txt
 else
-  echo "[*] Virtual environment already exists"
+  # check if venv folder exists
+  if [ ! -d "$SCRIPT_DIR/postprocess/.venv" ]; then
+    echo "[*] Creating virtual environment..."
+    python3 -m venv $SCRIPT_DIR/postprocess/.venv
+    pip3 install -r $SCRIPT_DIR/postprocess/requirements.txt
+  else
+    echo "[*] Virtual environment already exists"
+  fi
+  source $SCRIPT_DIR/postprocess/.venv/bin/activate
 fi
-
-source $SCRIPT_DIR/postprocess/.venv/bin/activate
 
 echo "[*] Postprocessing logs..."
 
@@ -56,5 +65,9 @@ python3 $SCRIPT_DIR/postprocess/plot_xve_utilization.py $SCRIPT_DIR/tmp/merged $
 python3 $SCRIPT_DIR/postprocess/plot_xve_occupancy.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/xve-occupancy $single_plot
 
 # Deactivate virtual environment
-deactivate
+if [ "$no_venv" = false ]; then
+  echo "[*] Deactivating virtual environment..."
+  deactivate
+fi
+
 echo "[*] Done"
