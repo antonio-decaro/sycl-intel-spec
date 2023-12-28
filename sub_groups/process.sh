@@ -63,6 +63,8 @@ python3 $SCRIPT_DIR/postprocess/merge.py $SCRIPT_DIR/tmp/parsed $SCRIPT_DIR/tmp/
 python3 $SCRIPT_DIR/postprocess/plot_time.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/time $logscale $time_unit $single_plot
 python3 $SCRIPT_DIR/postprocess/plot_xve_utilization.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/xve-utilization $single_plot
 python3 $SCRIPT_DIR/postprocess/plot_xve_occupancy.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/xve-occupancy $single_plot
+python3 $SCRIPT_DIR/postprocess/resume.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/resume.txt
+python3 $SCRIPT_DIR/postprocess/resume.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/resume.csv
 
 # Deactivate virtual environment
 if [ "$no_venv" = false ]; then
