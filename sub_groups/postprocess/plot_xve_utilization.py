@@ -42,7 +42,8 @@ def generate_plot(data, kernel_name):
     
     plt.xticks(bar_positions, labels, rotation=45, ha='right')
     plt.xlabel('SIMD')
-    plt.ylabel(f'%')
+    plt.ylabel(f'XVE Array (%)')
+    plt.legend(['Active', 'Idle', 'Stalled'])
     
     plt.title(kernel_name)
 

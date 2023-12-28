@@ -40,7 +40,7 @@ def generate_plot(data, kernel_name):
     
     plt.xticks(bar_positions, labels, rotation=45, ha='right')
     plt.xlabel('SIMD')
-    plt.ylabel(f'%')
+    plt.ylabel(f'XVE Threads Occupancy (%)')
     
     plt.title(kernel_name)
 
