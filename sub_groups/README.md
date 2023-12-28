@@ -15,4 +15,6 @@ Run `process.sh` to draw the plots.
 
 Optional Arguments:
 - `--logscale` use logscale to draw Y axis of the chart;
-- `--time_unit=<arg>` arg can be `s` (default), `ms`, `us`, or `ns`;
+- `--time-unit=<arg>` arg can be `s` (default), `ms`, `us`, or `ns`;
+- `--single-plot` puts all the charts in a single pdf file;
+- `--no-venv` don't use python virtual environment;
