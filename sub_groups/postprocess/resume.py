@@ -28,11 +28,11 @@ def get_data(data: pd.DataFrame, resume_df: pd.DataFrame, kernel_name, default_s
     xve_utilization_idle = grp['XVE Array:Idle(%)'].mean()
     xve_utilization_stalled = grp['XVE Array:Stalled(%)'].mean()
     
-    v1 = grp['XVE Instructions:FPU and EM active(%)'].mean()
-    v2 = grp['XVE Instructions:Send active(%)'].mean()
-    v3 = grp['XVE Instructions:Branch active(%)'].mean()
-    v4 = grp['XVE Instructions:FPU active(%)'].mean()
-    v5 = grp['XVE Instructions:EM active(%)'].mean()
+    v1 = grp["XVE Instructions:ALU0 active(%)"].mean()
+    v2 = grp["XVE Instructions:ALU1 active(%)"].mean()
+    v3 = grp["XVE Instructions:ALU2 active(%)"].mean()
+    v4 = grp['XVE Instructions:Send active(%)'].mean()
+    v5 = grp['XVE Instructions:Branch active(%)'].mean()
     v6 = grp['L3 Read Bandwidth, GB/sec'].mean()
     v7 = grp['L3 Write Bandwidth, GB/sec'].mean()
     v8 = grp['GPU Memory Bandwidth, GB/sec:Read'].mean()
@@ -51,11 +51,11 @@ columns = ["kernel-name",
            "XVE Array:Active(%)", 
            "XVE Array:Idle(%)", 
            "XVE Array:Stalled(%)",
-           "XVE Instructions:FPU and EM active(%)",
+           "XVE Instructions:ALU0 active(%)",
+           "XVE Instructions:ALU1 active(%)",
+           "XVE Instructions:ALU2 active(%)",
            "XVE Instructions:Send active(%)",
            "XVE Instructions:Branch active(%)",
-           "XVE Instructions:FPU active(%)",
-           "XVE Instructions:EM active(%)",
            "L3 Read Bandwidth, GB/sec",
            "L3 Write Bandwidth, GB/sec",
            "GPU Memory Bandwidth, GB/sec:Read",
