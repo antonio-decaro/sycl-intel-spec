@@ -2,8 +2,6 @@
 
 CXX_COMPILER=""
 CXX_FLAGS=""
-enable_fp64_benchmarks=0
-enable_sg8=1
 compute_benchmarks=1
 memory_benchmarks=1
 
@@ -13,8 +11,6 @@ MEMORY_TARGETS="host_device_bandwidth local_mem"
 help()
 {
     echo "Usage: ./build.sh --cxx-compier=/path/to/dpcpp --intel-arch=acm-g10
-      [ --enable-fp64 ] Enable fp64 benchmarks that are disabled by default;
-      [ --disable-sg8 ] Disables sub-group size 8 in benchmarks;
       [ --disable-compute-benchmarks ] Avoid building compute benchmarks;
       [ --disable-memory-benchmarks  ] Avoid building memory benchmarks;
       [ --cxx-flags= ] Additional flags to be passed to the compiler;
@@ -33,14 +29,6 @@ while [[ $# -gt 0 ]]; do
       ;;
     --cxx-flags=*)
       CXX_FLAGS="${1#*=}"
-      shift
-      ;;
-    --enable-fp64)
-      enable_fp64_benchmarks=1
-      shift
-      ;;
-    --disable-sg8)
-      enable_sg8=0
       shift
       ;;
     --disable-compute-benchmarks)
@@ -83,8 +71,6 @@ cmake -DCMAKE_CXX_COMPILER=$DPCPP_CLANG \
       -DENABLED_TIME_EVENT_PROFILING=ON \
       -DSYCL_IMPL=${SYCL_IMPL} \
       -DDPCPP_WITH_LZ_BACKEND=OFF \
-      -DSYCL_BENCH_ENABLE_FP64_BENCHMARKS=$enable_fp64_benchmarks \
-      -DSYCL_BENCH_SUPPORTS_SG_8=$enable_sg8 \
       -S $SCRIPT_DIR/sycl-bench -B $SCRIPT_DIR/build
 
 targets=""
