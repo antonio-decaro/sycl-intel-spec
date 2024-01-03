@@ -38,11 +38,11 @@ vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/matrix_mul
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/MatrixMul.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
-echo "spgemm"
-vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/spgemm \
+echo "spmm"
+vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/spmm \
   --seed=0 --no-verification \
-  --size=4096 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/SpGEMM.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/SpGEMM.csv
+  --size=4096 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/SpMM.log
+vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/SpMM.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "nbody"
