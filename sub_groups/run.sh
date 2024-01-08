@@ -28,7 +28,7 @@ mkdir -p $SCRIPT_DIR/tmp/vtune-reports
 
 echo "vec_add"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/vec_add \
-  --size=1000000 --num-iters=100000 --device=gpu --num-runs=$runs -- > $SCRIPT_DIR/tmp/logs/VectorAddition.log
+  --size=134217728 --num-iters=1 --device=gpu --num-runs=$runs -- > $SCRIPT_DIR/tmp/logs/VectorAddition.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/VectorAddition.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
@@ -78,25 +78,25 @@ rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "lin_reg_coeff"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/lin_reg_coeff \
-  --size=8388608 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/LinRegCoeff.log
+  --size=67108864 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/LinRegCoeff.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/LinRegCoeff.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "kmeans"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/kmeans \
-  --size=16777216 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/KMeans.log
+  --size=67108864 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/KMeans.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/KMeans.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "mol_dyn"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/mol_dyn \
-  --size=16777216 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MolDyn.log
+  --size=33554432 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MolDyn.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/MolDyn.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "merse_twister"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/merse_twister \
-  --size=33554432 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MerseTwister.log
+  --size=134217728 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MerseTwister.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/MerseTwister.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
