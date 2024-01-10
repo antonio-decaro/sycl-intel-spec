@@ -57,6 +57,7 @@ mkdir -p $SCRIPT_DIR/plots
 mkdir -p $SCRIPT_DIR/plots/time
 mkdir -p $SCRIPT_DIR/plots/xve-utilization
 mkdir -p $SCRIPT_DIR/plots/xve-occupancy
+mkdir -p $SCRIPT_DIR/plots/speedup
 
 python3 $SCRIPT_DIR/postprocess/parse.py $SCRIPT_DIR/tmp/logs $SCRIPT_DIR/tmp/parsed
 python3 $SCRIPT_DIR/postprocess/merge.py $SCRIPT_DIR/tmp/parsed $SCRIPT_DIR/tmp/vtune-reports $SCRIPT_DIR/tmp/merged
@@ -65,6 +66,7 @@ python3 $SCRIPT_DIR/postprocess/plot_xve_utilization.py $SCRIPT_DIR/tmp/merged $
 python3 $SCRIPT_DIR/postprocess/plot_xve_occupancy.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/xve-occupancy $single_plot
 python3 $SCRIPT_DIR/postprocess/resume.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/resume.txt
 python3 $SCRIPT_DIR/postprocess/resume.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/resume.csv
+python3 $SCRIPT_DIR/postprocess/speedup_plot.py $SCRIPT_DIR/plots/resume.csv $SCRIPT_DIR/plots/speedup/speedup-simd32.pdf 32
 
 # Deactivate virtual environment
 if [ "$no_venv" = false ]; then
