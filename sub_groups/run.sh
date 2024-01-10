@@ -38,10 +38,10 @@ vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/matrix_mul
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/MatrixMul.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
-echo "spmm"
+echo "spmv"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/spmm \
   --seed=0 --no-verification \
-  --size=4096 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/SpMM.log
+  --size=8192 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/SpMM.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/SpMM.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
@@ -98,6 +98,12 @@ echo "merse_twister"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/merse_twister \
   --size=134217728 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MerseTwister.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/MerseTwister.csv
+rm -rf $SCRIPT_DIR/tmp/r000gh
+
+echo "black_scholes"
+vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/black_scholes \
+  --size=134217728 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/BlackScholes.log
+vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/BlackScholes.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
 

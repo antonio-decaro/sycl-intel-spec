@@ -5,7 +5,7 @@ CXX_FLAGS=""
 compute_benchmarks=1
 memory_benchmarks=1
 
-COMPUTE_TARGETS="vec_add matrix_mul nbody scalar_prod sobel median lin_reg_coeff kmeans mol_dyn merse_twister spgemm spmm"
+COMPUTE_TARGETS="vec_add matrix_mul spmv spgemm nbody scalar_prod sobel median lin_reg_coeff kmeans mol_dyn merse_twister black_scholes"
 MEMORY_TARGETS="host_device_bandwidth local_mem"
 
 help()
