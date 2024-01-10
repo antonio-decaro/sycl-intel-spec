@@ -28,7 +28,7 @@ mkdir -p $SCRIPT_DIR/tmp/vtune-reports
 
 echo "vec_add"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/vec_add \
-  --size=134217728 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/VectorAddition.log
+  --size=4194304 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/VectorAddition.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/VectorAddition.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
@@ -54,7 +54,7 @@ rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "nbody"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/nbody \
-  --size=8192 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/NBody.log
+  --size=4096 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/NBody.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/NBody.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
@@ -72,7 +72,7 @@ rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "median"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/median \
-  --size=2048 --num-iters=1000 --device=gpu --no-verification --num-runs=$runs > $SCRIPT_DIR/tmp/logs/Median.log
+  --size=1024 --num-iters=1000 --device=gpu --no-verification --num-runs=$runs > $SCRIPT_DIR/tmp/logs/Median.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/Median.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
@@ -90,7 +90,7 @@ rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "mol_dyn"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/mol_dyn \
-  --size=60000 --num-iters=200000 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MolDyn.log
+  --size=262144 --num-iters=200000 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MolDyn.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/MolDyn.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
