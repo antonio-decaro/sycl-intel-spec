@@ -28,7 +28,7 @@ mkdir -p $SCRIPT_DIR/tmp/vtune-reports
 
 echo "vec_add"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/vec_add \
-  --size=1000000 --num-iters=100000 --device=gpu --num-runs=$runs -- > $SCRIPT_DIR/tmp/logs/VectorAddition.log
+  --size=134217728 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/VectorAddition.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/VectorAddition.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
@@ -36,6 +36,20 @@ echo "matrix_mul"
 vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/matrix_mul \
   --size=2048 --num-iters=5 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MatrixMul.log
 vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/MatrixMul.csv
+rm -rf $SCRIPT_DIR/tmp/r000gh
+
+echo "spmm"
+vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/spmm \
+  --seed=0 --no-verification \
+  --size=4096 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/SpMM.log
+vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/SpMM.csv
+rm -rf $SCRIPT_DIR/tmp/r000gh
+
+echo "spgemm"
+vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/spgemm \
+  --seed=0 --no-verification \
+  --size=4096 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/SpGEMM.log
+vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/SpGEMM.csv
 rm -rf $SCRIPT_DIR/tmp/r000gh
 
 echo "nbody"
