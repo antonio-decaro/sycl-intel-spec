@@ -29,17 +29,14 @@ def get_data(data: pd.DataFrame, resume_df: pd.DataFrame, kernel_name, default_s
     xve_utilization_stalled = grp['XVE Array:Stalled(%)'].mean()
     
     v0 = grp['Computing Threads Started'].mean()
-    v1 = grp["XVE Instructions:ALU0 active(%)"].mean()
-    v2 = grp["XVE Instructions:ALU1 active(%)"].mean()
-    v3 = grp["XVE Instructions:ALU2 active(%)"].mean()
-    v4 = grp['XVE Instructions:Send active(%)'].mean()
-    v5 = grp['XVE Instructions:Branch active(%)'].mean()
-    v6 = grp['L3 Read Bandwidth, GB/sec'].mean()
-    v7 = grp['L3 Write Bandwidth, GB/sec'].mean()
-    v8 = grp['GPU Memory Bandwidth, GB/sec:Read'].mean()
-    v9 = grp['GPU Memory Bandwidth, GB/sec:Write'].mean()
+    v1 = grp['XVE Instructions:Send active(%)'].mean()
+    v2 = grp['XVE Instructions:Branch active(%)'].mean()
+    v3 = grp['L3 Read Bandwidth, GB/sec'].mean()
+    v4 = grp['L3 Write Bandwidth, GB/sec'].mean()
+    v5 = grp['GPU Memory Bandwidth, GB/sec:Read'].mean()
+    v6 = grp['GPU Memory Bandwidth, GB/sec:Write'].mean()
 
-    resume_df.loc[len(resume_df)] = [name, type, simd, speedup, xve_occupancy, xve_utilization_active, xve_utilization_idle, xve_utilization_stalled, v0, v1, v2, v3, v4, v5, v6, v7, v8, v9]
+    resume_df.loc[len(resume_df)] = [name, type, simd, speedup, xve_occupancy, xve_utilization_active, xve_utilization_idle, xve_utilization_stalled, v0, v1, v2, v3, v4, v5, v6]
 
 kernels_dir = sys.argv[1]
 outfile = sys.argv[2]
@@ -53,9 +50,6 @@ columns = ["kernel-name",
            "XVE Array:Idle(%)", 
            "XVE Array:Stalled(%)",
            'Computing Threads Started',
-           "XVE Instructions:ALU0 active(%)",
-           "XVE Instructions:ALU1 active(%)",
-           "XVE Instructions:ALU2 active(%)",
            "XVE Instructions:Send active(%)",
            "XVE Instructions:Branch active(%)",
            "L3 Read Bandwidth, GB/sec",
