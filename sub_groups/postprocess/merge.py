@@ -33,7 +33,11 @@ if __name__ == "__main__":
     if type:
       df_parsed['type'] = df_parsed['kernel-name'].str.split('_').str[-1]
     
-    df_vtune = pd.read_csv(f"{vtune_reports}/{basename}.csv", sep='\t')
+    df_vtune_1 = pd.read_csv(f"{vtune_reports}/overview/{basename}.csv", sep='\t')
+    df_vtune_2 = pd.read_csv(f"{vtune_reports}/instructions/{basename}.csv", sep='\t')
+    df_vtune_2.drop(columns=['Work Size:Global','Work Size:Local','Computing Task:Total Time','Computing Task:Average Time','Computing Task:Instance Count','Computing Task:SIMD Width','Computing Task:SVM Usage Type','Data Transferred:Size'], inplace=True)
+    df_vtune = pd.merge(df_vtune_1, df_vtune_2, on=['Computing Task'], how='left', suffixes=('', ''))
+    
     # delete row that does not contain a kernel name
     df_vtune = df_vtune.dropna(subset=['Work Size:Local'])
     # drop rows with a specific kernel name
