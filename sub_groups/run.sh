@@ -1,12 +1,47 @@
 #!/bin/bash
 
 runs=5
+AVAILABLE_TARGETS="vec_add:134217728 matrix_mul:4096 spmv:8192 spgemm:4096 nbody:8192 scalar_prod:8388608 sobel:4096 median:4096 lin_reg_coeff:67108864 kmeans:67108864 mol_dyn:33554432 merse_twister:134217728 black_scholes:134217728"
+selected_targets=""
+running_targets=""
+avoid_overwrite=false
+target_specified=false
+
+# function to print help
+help()
+{
+  echo "Usage: ./run.sh
+    [ -t= ] Specify the targets to run with their sizes. If not specified, all targets will be run with their default sizes;
+    [ --runs= ] Specify the number of runs for each target. Default is 5;
+    [ --avoid-overwrite ] Avoid overwriting the results of previous runs;
+    [ -h | --help ] Print this help message and exit."
+  echo -n "Available targets: "
+  for pair in $AVAILABLE_TARGETS; do
+    name=""
+    value=""
+    IFS=":" read -r name value <<< "$pair"
+    echo -n "$name "
+  done
+  echo ""
+}
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    -t=*)
+      selected_targets+="${1#*=} "
+      shift
+      ;;
+    --avoid-overwrite)
+      avoid_overwrite=true
+      shift
+      ;;
     --runs=*)
       runs="${1#*=}"
       shift
+      ;;
+    -h | --help)
+      help
+      exit 0
       ;;
     *)
       echo "Invalid argument: $1"
@@ -19,92 +54,77 @@ done
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 BENCH_DIR=$SCRIPT_DIR/../build
 
+# check if the specified targets are valid
+for pair in $selected_targets; do
+  target_specified=true
+  name=""
+  if [[ $pair == *:* ]]; then
+    # Split the pair into name and value if ':' is present
+    IFS=":" read -r name value <<< "$pair"
+    # check if the name is valid
+    if [[ $AVAILABLE_TARGETS != *"$name"* ]]; then
+      echo "Invalid target name: $name"
+      exit 1
+    fi
+    if [[ $value =~ ^[0-9]+$ ]]; then
+      # check if the value is valid
+      if [[ $value -lt 1 ]]; then
+        echo "Invalid target value: $value"
+        exit 1
+      fi
+    else
+      echo "Invalid target value: $value"
+      exit 1
+    fi
+    running_targets+="$name:$value "
+  else
+    # Just the name is present
+    name=$pair
+    # check if the name is valid
+    if [[ $AVAILABLE_TARGETS != *"$name"* ]]; then
+      echo "Invalid target name: $name"
+      exit 1
+    fi
+    # set the default value presents in AVAILABLE_TARGETS
+    value=$(echo $AVAILABLE_TARGETS | grep -o "$name:[^ ]*" | grep -o "[^:]*$")
+    running_targets+="$name:$value "
+  fi
+done
+
+if [ "$target_specified" = false ]; then
+  running_targets=$AVAILABLE_TARGETS
+fi
+
+echo "[*] Running targets: $running_targets"
+
 # Running benchmarks
 echo "[*] Running benchmarks..."
 
 mkdir -p $SCRIPT_DIR/tmp
 mkdir -p $SCRIPT_DIR/tmp/logs
 mkdir -p $SCRIPT_DIR/tmp/vtune-reports
+mkdir -p $SCRIPT_DIR/tmp/vtune-reports/overview
+mkdir -p $SCRIPT_DIR/tmp/vtune-reports/instructions
 
-echo "vec_add"
-vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/vec_add \
-  --size=134217728 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/VectorAddition.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/VectorAddition.csv
-rm -rf $SCRIPT_DIR/tmp/r000gh
-
-echo "matrix_mul"
-vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/matrix_mul \
-  --size=4096 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MatrixMul.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/MatrixMul.csv
-rm -rf $SCRIPT_DIR/tmp/r000gh
-
-echo "spmv"
-vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/spmv \
-  --seed=0 --no-verification \
-  --size=8192 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/SpMV.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/SpMV.csv
-rm -rf $SCRIPT_DIR/tmp/r000gh
-
-echo "spgemm"
-vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/spgemm \
-  --seed=0 --no-verification \
-  --size=4096 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/SpGEMM.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/SpGEMM.csv
-rm -rf $SCRIPT_DIR/tmp/r000gh
-
-echo "nbody"
-vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/nbody \
-  --size=8192 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/NBody.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/NBody.csv
-rm -rf $SCRIPT_DIR/tmp/r000gh
-
-echo "scalar_prod"
-vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/scalar_prod \
-  --size=8388608 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/ScalarProd.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/ScalarProd.csv
-rm -rf $SCRIPT_DIR/tmp/r000gh
-
-echo "sobel"
-vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/sobel \
-  --size=4096 --num-iters=1 --device=gpu --no-verification --num-runs=$runs > $SCRIPT_DIR/tmp/logs/Sobel.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/Sobel.csv
-rm -rf $SCRIPT_DIR/tmp/r000gh
-
-echo "median"
-vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/median \
-  --size=4096 --num-iters=1 --device=gpu --no-verification --num-runs=$runs > $SCRIPT_DIR/tmp/logs/Median.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/Median.csv
-rm -rf $SCRIPT_DIR/tmp/r000gh
-
-echo "lin_reg_coeff"
-vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/lin_reg_coeff \
-  --size=67108864 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/LinRegCoeff.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/LinRegCoeff.csv
-rm -rf $SCRIPT_DIR/tmp/r000gh
-
-echo "kmeans"
-vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/kmeans \
-  --size=67108864 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/KMeans.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/KMeans.csv
-rm -rf $SCRIPT_DIR/tmp/r000gh
-
-echo "mol_dyn"
-vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/mol_dyn \
-  --size=33554432 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MolDyn.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/MolDyn.csv
-rm -rf $SCRIPT_DIR/tmp/r000gh
-
-echo "merse_twister"
-vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/merse_twister \
-  --size=134217728 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/MerseTwister.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/MerseTwister.csv
-rm -rf $SCRIPT_DIR/tmp/r000gh
-
-echo "black_scholes"
-vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r@@@{at} -- $BENCH_DIR/black_scholes \
-  --size=134217728 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/BlackScholes.log
-vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/BlackScholes.csv
-rm -rf $SCRIPT_DIR/tmp/r000gh
-
+for pair in $running_targets; do
+  name=""
+  value=""
+  IFS=":" read -r name value <<< "$pair"
+  if [ "$avoid_overwrite" = true ]; then
+    if [ -f "$SCRIPT_DIR/tmp/logs/$name.log" ]; then
+      echo "[-] Skipping $name"
+      continue
+    fi
+  fi
+  echo "[-] Running $name with size $value"
+  vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r000{at} -- $BENCH_DIR/$name \
+    --size=$value --seed=0 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/$name.log
+  vtune -collect gpu-hotspots -k characterization-mode=instruction-count -r $SCRIPT_DIR/tmp/r001{at} -- $BENCH_DIR/$name \
+    --size=$value --seed=0 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/$name.log
+  vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/overview/$name.csv
+  vtune -report hotspots -r $SCRIPT_DIR/tmp/r001gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/instructions/$name.csv
+  rm -rf $SCRIPT_DIR/tmp/r000gh
+  rm -rf $SCRIPT_DIR/tmp/r001gh
+done
 
 echo "[*] Done"
