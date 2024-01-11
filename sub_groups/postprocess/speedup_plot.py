@@ -13,6 +13,7 @@ sg = int(sys.argv[3])
 
 # Filter data for SIMD 32 and merge kernel names with data types
 simd_32_data = data[data['simd'] == sg]
+simd_32_data['type'].fillna('def', inplace=True)
 simd_32_data['kernel_with_type'] = simd_32_data['kernel-name'] + " (" + simd_32_data['type'] + ")"
 
 # Grouping by kernel name and data type, and sorting by speedup
