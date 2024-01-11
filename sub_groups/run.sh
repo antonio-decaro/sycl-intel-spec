@@ -95,10 +95,7 @@ if [ "$target_specified" = false ]; then
   running_targets=$AVAILABLE_TARGETS
 fi
 
-echo "[*] Running targets: $running_targets"
-
-# Running benchmarks
-echo "[*] Running benchmarks..."
+echo "[*] Running benchmarks: $running_targets"
 
 mkdir -p $SCRIPT_DIR/tmp
 mkdir -p $SCRIPT_DIR/tmp/logs
