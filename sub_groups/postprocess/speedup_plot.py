@@ -50,5 +50,5 @@ plt.ylabel('Speedup')
 plt.title(f'SIMD {sg} Speedups')
 plt.ylim(bottom=0.5)  # Set the bottom limit of the Y-axis to 0.5
 plt.tight_layout()
-
+plt.grid(linestyle='--', alpha=0.5)
 plt.savefig(output_file, dpi=1000)
