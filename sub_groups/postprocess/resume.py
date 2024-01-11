@@ -38,8 +38,15 @@ def get_data(data: pd.DataFrame, resume_df: pd.DataFrame, kernel_name, default_s
     v7 = grp['L3 Write Bandwidth, GB/sec'].mean()
     v8 = grp['GPU Memory Bandwidth, GB/sec:Read'].mean()
     v9 = grp['GPU Memory Bandwidth, GB/sec:Write'].mean()
+    v10 = grp["GPU Instructions Executed"].mean()
+    v11 = grp["GPU Instructions Executed:Control Flow"].mean()
+    v12 = grp["GPU Instructions Executed:Send"].mean()
+    v13 = grp["GPU Instructions Executed:Int32 & SP Float"].mean()
+    v14 = grp["GPU Instructions Executed:Int64 & DP Float"].mean()
+    v15 = grp["GPU Instructions Executed:Other"].mean()
+    v16 = grp["SIMD Utilization(%)"].mean()
 
-    resume_df.loc[len(resume_df)] = [name, type, simd, speedup, xve_occupancy, xve_utilization_active, xve_utilization_idle, xve_utilization_stalled, v0, v1, v2, v3, v4, v5, v6, v7, v8, v9]
+    resume_df.loc[len(resume_df)] = [name, type, simd, speedup, xve_occupancy, xve_utilization_active, xve_utilization_idle, xve_utilization_stalled, v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16]
 
 kernels_dir = sys.argv[1]
 outfile = sys.argv[2]
@@ -62,6 +69,13 @@ columns = ["kernel-name",
            "L3 Write Bandwidth, GB/sec",
            "GPU Memory Bandwidth, GB/sec:Read",
            "GPU Memory Bandwidth, GB/sec:Write",
+           "GPU Instructions Executed",
+           "GPU Instructions Executed:Control Flow",
+           "GPU Instructions Executed:Send",
+           "GPU Instructions Executed:Int32 & SP Float",
+           "GPU Instructions Executed:Int64 & DP Float",
+           "GPU Instructions Executed:Other",
+           "SIMD Utilization(%)",
            ]
 resume_df = pd.DataFrame(columns=columns)
 
