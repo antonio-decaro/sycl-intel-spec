@@ -2,6 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import sys
+import numpy as np
+
+top_lim = 2.25
 
 if len(sys.argv) != 3:
   print("Usage: python plot_control_flow.py <csv_file> <out_file>")
@@ -12,6 +15,7 @@ out_file = sys.argv[2]
 
 # Load the dataset
 data = pd.read_csv(file_path)
+data['type'].fillna('fp32', inplace=True)
 
 # Filtering data for 32 SIMD and 16 SIMD
 data_32_simd = data[data['simd'] == 32]
@@ -34,29 +38,48 @@ for col in instruction_columns:
     normalized_col = 'Normalized ' + col
 
     # Normalizing (16 SIMD / 32 SIMD)
-    normalized_df[normalized_col] = merged_data[col_16] / merged_data[col_32]
+    normalized_df[normalized_col] = merged_data[col_32] / merged_data[col_16]
 
 # Adding 'kernel-name' and 'type' for plotting
 normalized_df['kernel-name'] = merged_data['kernel-name']
 normalized_df['type'] = merged_data['type']
 
 # Melting the DataFrame for easier plotting
-melted_normalized_df = pd.melt(normalized_df, id_vars=['kernel-name', 'type'], var_name='Instruction Type', value_name='Normalized Value')
+normalized_df = pd.melt(normalized_df, id_vars=['kernel-name', 'type'], var_name='Instruction Type', value_name='Normalized Value')
+print(normalized_df.columns)
 
 # change the name of the columns by removing "Normalized GPU Instructions Executed"
-melted_normalized_df['Instruction Type'] = melted_normalized_df['Instruction Type'].apply(lambda x: x.replace('Normalized GPU Instructions Executed:', ''))
-melted_normalized_df['Instruction Type'] = melted_normalized_df['Instruction Type'].apply(lambda x: x.replace('Normalized GPU Instructions Executed', 'Total GPU Instructions'))
+normalized_df['Instruction Type'] = normalized_df['Instruction Type'].apply(lambda x: x.replace('Normalized GPU Instructions Executed:', ''))
+normalized_df['Instruction Type'] = normalized_df['Instruction Type'].apply(lambda x: x.replace('Normalized GPU Instructions Executed', 'Total GPU Instructions'))
 
-# Plotting
-plt.figure(figsize=(15, 10))
-sns.barplot(x='kernel-name', y='Normalized Value', hue='Instruction Type', data=melted_normalized_df)
-plt.title('Normalized GPU Instructions (16 SIMD Baseline vs 32 SIMD)')
-plt.ylabel('Normalized Instructions')
-plt.ylim(top=3)
-plt.axhline(y=1, color='black', linewidth=1)  # Baseline at speedup = 1
-plt.xlabel('Kernel Name')
-plt.xticks(rotation=45)
-plt.legend(title='Instruction Type')
-plt.tight_layout()
-plt.grid(linestyle='--', alpha=0.5)
+cols = len(instruction_columns)
+rows = normalized_df['kernel-name'].nunique()
+
+# sns.barplot(x='kernel-name', y='Normalized Value', hue='Instruction Type', data=normalized_df)
+# Initialize a grid of plots with an Axes for each InstructionType
+grid = sns.FacetGrid(normalized_df, col='kernel-name', margin_titles=True, height=3, palette='bright')
+
+# Draw a horizontal line to show the starting point
+grid.refline(x=1, linestyle=":")
+
+def barplot(data, **kwargs):
+  sns.barplot(x='Normalized Value', y='Instruction Type', hue='type',  data=data, **kwargs)
+
+grid.map_dataframe(barplot)
+grid.set(xlim=(0, 2))
+grid.set_titles(col_template="{col_name}")
+
+grid.fig.suptitle('Normalized GPU Instructions (16 SIMD Baseline vs 32 SIMD)')
+grid.fig.tight_layout()
+
+
+
+
+# plt.title('Normalized GPU Instructions (16 SIMD Baseline vs 32 SIMD)')
+# plt.ylabel('Normalized Instructions')
+# # plt.axhline(y=1, color='black', linewidth=1)  # Baseline at speedup = 1
+# # plt.xlabel('Kernel Name')
+# # plt.xticks(rotation=45)
+# plt.tight_layout(w_pad=1, h_pad=1)
+# plt.grid(linestyle='--', alpha=0.5)
 plt.savefig(out_file, dpi=1000)
