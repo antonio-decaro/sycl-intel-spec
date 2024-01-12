@@ -69,6 +69,7 @@ python3 $SCRIPT_DIR/postprocess/resume.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plo
 python3 $SCRIPT_DIR/postprocess/resume.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/resume.csv
 python3 $SCRIPT_DIR/postprocess/plot_speedup.py $SCRIPT_DIR/plots/resume.csv $SCRIPT_DIR/plots/speedup/speedup-simd32.pdf 32 2> /dev/null
 python3 $SCRIPT_DIR/postprocess/plot_gpu_instructions.py $SCRIPT_DIR/plots/resume.csv $SCRIPT_DIR/plots/gpu-instructions/gpu-instructions.pdf 2> /dev/null
+python3 $SCRIPT_DIR/postprocess/plot_simd_utilization.py $SCRIPT_DIR/plots/resume.csv $SCRIPT_DIR/plots/gpu-instructions/simd-utilization.pdf
 
 # Deactivate virtual environment
 if [ "$no_venv" = false ]; then
