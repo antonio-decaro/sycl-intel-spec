@@ -16,7 +16,7 @@ out_file = sys.argv[2]
 
 # Load the dataset
 data = pd.read_csv(file_path)
-data['type'].fillna('fp32', inplace=True)
+data['type'].fillna('unk', inplace=True)
 
 # Filtering data for 32 SIMD and 16 SIMD
 data_32_simd = data[data['simd'] == 32]
@@ -83,6 +83,8 @@ for i, ax in enumerate(axs.flat):
   ax.set_xlim(0, top_lim)
   ax.set_xticks([0, 0.5, 1, 1.5, 2])
   ax.set_title(kernel_name)
+  if (df['type'].unique().size == 1):
+    ax.legend().set_visible(False)
   ax.axvline(x=1, linestyle=":", color='black')
 
 fig.tight_layout(pad=3)
