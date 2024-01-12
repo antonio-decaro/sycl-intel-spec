@@ -76,10 +76,15 @@ for i, ax in enumerate(axs.flat):
   if i % cols != 0:
     ax.set_ylabel('')
     ax.set_yticklabels([])
+  if i / cols < rows - 1:
+    ax.set_xlabel('')
+    ax.set_xticklabels([])
+
   ax.set_xlim(0, top_lim)
   ax.set_xticks([0, 0.5, 1, 1.5, 2])
   ax.set_title(kernel_name)
   ax.axvline(x=1, linestyle=":", color='black')
 
 fig.tight_layout(pad=3)
+fig.suptitle('Normalized GPU Instructions Executed (32 SIMD / 16 SIMD)')
 plt.savefig(out_file)
