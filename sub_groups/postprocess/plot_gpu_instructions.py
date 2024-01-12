@@ -56,7 +56,7 @@ normalized_df['Instruction Type'] = normalized_df['Instruction Type'].apply(lamb
 normalized_df['Instruction Type'] = normalized_df['Instruction Type'].apply(lambda x: x.replace('Normalized GPU Instructions Executed', 'Total GPU Instructions'))
 
 cols = math.ceil(math.sqrt(n_kernels))
-rows = n_kernels // cols
+rows = math.ceil(n_kernels / cols)
 fig, axs = plt.subplots(rows, cols, figsize=(15, 10))
 
 for i, ax in enumerate(axs.flat):
