@@ -4,11 +4,16 @@ logscale=False
 time_unit="s"
 single_plot=False
 no_venv=false
+only_resume=False
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --logscale*)
       logscale=True
+      shift
+      ;;
+    --only-resume*)
+      only_resume=True
       shift
       ;;
     --single-plot*)
@@ -62,9 +67,13 @@ mkdir -p $SCRIPT_DIR/plots/gpu-instructions
 
 python3 $SCRIPT_DIR/postprocess/parse.py $SCRIPT_DIR/tmp/logs $SCRIPT_DIR/tmp/parsed
 python3 $SCRIPT_DIR/postprocess/merge.py $SCRIPT_DIR/tmp/parsed $SCRIPT_DIR/tmp/vtune-reports $SCRIPT_DIR/tmp/merged
-python3 $SCRIPT_DIR/postprocess/plot_time.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/time $logscale $time_unit $single_plot
-python3 $SCRIPT_DIR/postprocess/plot_xve_utilization.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/xve-utilization $single_plot
-python3 $SCRIPT_DIR/postprocess/plot_xve_occupancy.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/xve-occupancy $single_plot
+
+if [ "$only_resume" = false ]; then
+  python3 $SCRIPT_DIR/postprocess/plot_time.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/time $logscale $time_unit $single_plot
+  python3 $SCRIPT_DIR/postprocess/plot_xve_utilization.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/xve-utilization $single_plot
+  python3 $SCRIPT_DIR/postprocess/plot_xve_occupancy.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/xve-occupancy $single_plot
+fi
+
 python3 $SCRIPT_DIR/postprocess/resume.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/resume.txt
 python3 $SCRIPT_DIR/postprocess/resume.py $SCRIPT_DIR/tmp/merged $SCRIPT_DIR/plots/resume.csv
 python3 $SCRIPT_DIR/postprocess/plot_speedup.py $SCRIPT_DIR/plots/resume.csv $SCRIPT_DIR/plots/speedup/speedup-simd32.pdf 32 2> /dev/null

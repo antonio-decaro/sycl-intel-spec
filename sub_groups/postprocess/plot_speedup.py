@@ -44,7 +44,7 @@ for _, row in grouped_sorted_data.iterrows():
     plt.bar(row['kernel_with_type'], speedup, color=color, edgecolor='black')
 
 plt.axhline(y=1, color='black', linewidth=1)  # Baseline at speedup = 1
-plt.xticks(rotation=90)
+plt.xticks(rotation=45, ha='right')
 plt.xlabel('Kernel Name with Data Type')
 plt.ylabel('Speedup')
 plt.title(f'SIMD {sg} Speedups')
