@@ -4,7 +4,7 @@ logscale=False
 time_unit="s"
 single_plot=False
 no_venv=false
-only_resume=False
+only_resume=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -13,7 +13,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     --only-resume*)
-      only_resume=True
+      only_resume=true
       shift
       ;;
     --single-plot*)
