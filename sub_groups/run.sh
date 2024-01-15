@@ -1,6 +1,7 @@
 #!/bin/bash
 
 runs=5
+local=256
 AVAILABLE_TARGETS="vec_add:134217728 matrix_mul:4096 spmv:8192 spgemm:512 nbody:8192 scalar_prod:8388608 sobel:8192 median:8192 lin_reg_coeff:67108864 kmeans:67108864 mol_dyn:33554432 merse_twister:67108864 black_scholes:67108864"
 selected_targets=""
 running_targets=""
@@ -13,6 +14,7 @@ help()
   echo "Usage: ./run.sh
     [ -t= ] Specify the targets to run with their sizes. If not specified, all targets will be run with their default sizes;
     [ --runs= ] Specify the number of runs for each target. Default is 5;
+    [ --local= ] Specify the local size for each target. Default is 256;
     [ --avoid-overwrite ] Avoid overwriting the results of previous runs;
     [ -h | --help ] Print this help message and exit."
   echo -n "Available targets: "
@@ -37,6 +39,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --runs=*)
       runs="${1#*=}"
+      shift
+      ;;
+    --local=*)
+      local="${1#*=}"
       shift
       ;;
     -h | --help)
@@ -115,9 +121,9 @@ for pair in $running_targets; do
   fi
   echo "[-] Running $name with size $value"
   vtune -collect gpu-hotspots -r $SCRIPT_DIR/tmp/r000{at} -- $BENCH_DIR/$name \
-    --size=$value --seed=0 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/$name.log
+    --size=$value --local=$local --seed=0 --num-iters=1 --device=gpu --num-runs=$runs > $SCRIPT_DIR/tmp/logs/$name.log
   vtune -collect gpu-hotspots -k characterization-mode=instruction-count -r $SCRIPT_DIR/tmp/r001{at} -- $BENCH_DIR/$name \
-    --size=$value --seed=0 --num-iters=1 --device=gpu --num-runs=$runs > /dev/null
+    --size=$value --local=$local --seed=0 --num-iters=1 --device=gpu --num-runs=$runs > /dev/null
   vtune -report hotspots -r $SCRIPT_DIR/tmp/r000gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/overview/$name.csv
   vtune -report hotspots -r $SCRIPT_DIR/tmp/r001gh -group-by computing-task -format csv -report-output $SCRIPT_DIR/tmp/vtune-reports/instructions/$name.csv
   rm -rf $SCRIPT_DIR/tmp/r000gh
