@@ -1,7 +1,7 @@
 #!/bin/bash
 
 runs=5
-AVAILABLE_TARGETS="vec_add:134217728 matrix_mul:4096 spmv:8192 spgemm:512 nbody:8192 scalar_prod:8388608 sobel:8192 median:8192 lin_reg_coeff:67108864 kmeans:67108864 mol_dyn:33554432 merse_twister:134217728 black_scholes:134217728"
+AVAILABLE_TARGETS="vec_add:134217728 matrix_mul:4096 spmv:8192 spgemm:512 nbody:8192 scalar_prod:8388608 sobel:8192 median:8192 lin_reg_coeff:67108864 kmeans:67108864 mol_dyn:33554432 merse_twister:67108864 black_scholes:67108864"
 selected_targets=""
 running_targets=""
 avoid_overwrite=false
