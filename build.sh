@@ -4,6 +4,7 @@ CXX_COMPILER=""
 CXX_FLAGS=""
 compute_benchmarks=1
 memory_benchmarks=1
+input_dependent_benchmarks=1
 
 COMPUTE_TARGETS="vec_add matrix_mul spmv spgemm nbody scalar_prod sobel median lin_reg_coeff kmeans mol_dyn merse_twister black_scholes"
 MEMORY_TARGETS="host_device_bandwidth local_mem"
@@ -13,6 +14,7 @@ help()
     echo "Usage: ./build.sh --cxx-compier=/path/to/dpcpp --intel-arch=acm-g10
       [ --disable-compute-benchmarks ] Avoid building compute benchmarks;
       [ --disable-memory-benchmarks  ] Avoid building memory benchmarks;
+      [ --disable-input-dependend-benchmarks  ] Avoid building memory benchmarks;
       [ --cxx-flags= ] Additional flags to be passed to the compiler;
       [ -h | --help ] Print this help message and exit."
     exit 2
@@ -37,6 +39,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --disable-memory-benchmarks)
       memory_benchmarks=0
+      shift
+      ;;
+    --disable-input-dependend-benchmarks)
+      input_dependent_benchmarks=0
       shift
       ;;
     -h | --help)
@@ -65,7 +71,7 @@ DPCPP_LIB=$BIN_DIR/../lib/
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SYCL_IMPL="dpcpp"
 
-echo "[*] Build DPC++ with LevelZero backend"
+echo "[*] Build sycl-bench with LevelZero backend"
 cmake -DCMAKE_CXX_COMPILER=$DPCPP_CLANG \
       -DCMAKE_CXX_FLAGS="-Wno-unknown-cuda-version -Wno-linker-warnings -Wno-sycl-target $CXX_FLAGS" \
       -DENABLED_TIME_EVENT_PROFILING=ON \
@@ -89,5 +95,15 @@ echo "[*] Benchmark buidling finished"
 echo "[*] Copying the benchmark utils to the sub folders"
 
 cp $SCRIPT_DIR/sycl-bench/Brommy.bmp $SCRIPT_DIR/sub_groups
+
+if [ $input_dependent_benchmarks -eq 1 ]
+then
+echo "[*] Building sycl-bfs with LevelZero backend"
+cmake -DCMAKE_CXX_COMPILER=$DPCPP_CLANG \
+      -S $SCRIPT_DIR/sycl-bfs -B $SCRIPT_DIR/sycl-bfs/build
+cmake --build $SCRIPT_DIR/sycl-bfs/build -j --target sycl_bfs
+
+cp $SCRIPT_DIR/sycl-bfs/build/sycl_bfs $SCRIPT_DIR/build
+fi
 
 echo "[*] Done"
