@@ -2,6 +2,3 @@
 	path = sycl-bench
 	url = https://github.com/antonio-decaro/sycl-bench.git
 	branch = sub_groups
-[submodule "sycl-bfs"]
-	path = sycl-bfs
-	url = https://github.com/antonio-decaro/sycl-bfs.git
