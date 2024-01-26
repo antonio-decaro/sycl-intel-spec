@@ -8,6 +8,7 @@ input_dependent_benchmarks=1
 
 COMPUTE_TARGETS="vec_add matrix_mul spmv spgemm nbody scalar_prod sobel median lin_reg_coeff kmeans mol_dyn merse_twister black_scholes"
 MEMORY_TARGETS="host_device_bandwidth local_mem"
+INPUT_DEPENDENT_TARGETS="bfs"
 
 help()
 {
@@ -88,6 +89,10 @@ if [ $memory_benchmarks -eq 1 ]
 then
   targets="$targets $MEMORY_TARGETS"
 fi
+if [ $input_dependent_benchmarks -eq 1 ]
+then
+  targets="$targets $INPUT_DEPENDENT_TARGETS"
+fi
 
 cmake --build $SCRIPT_DIR/build -j --target $targets
 
@@ -95,15 +100,5 @@ echo "[*] Benchmark buidling finished"
 echo "[*] Copying the benchmark utils to the sub folders"
 
 cp $SCRIPT_DIR/sycl-bench/Brommy.bmp $SCRIPT_DIR/sub_groups
-
-if [ $input_dependent_benchmarks -eq 1 ]
-then
-echo "[*] Building sycl-bfs with LevelZero backend"
-cmake -DCMAKE_CXX_COMPILER=$DPCPP_CLANG \
-      -S $SCRIPT_DIR/sycl-bfs -B $SCRIPT_DIR/sycl-bfs/build
-cmake --build $SCRIPT_DIR/sycl-bfs/build -j --target sycl_bfs
-
-cp $SCRIPT_DIR/sycl-bfs/build/sycl_bfs $SCRIPT_DIR/build
-fi
 
 echo "[*] Done"
